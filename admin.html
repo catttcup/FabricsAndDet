@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F&D - Админ-панель</title>
+    <link rel="stylesheet" href="styles/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Верхняя панель -->
+    <div class="top-bar">
+        <!-- Кнопка для скрытия/открытия меню -->
+        <button class="menu-toggle-btn" id="menuToggle">
+            <i class="fas fa-bars" id="menuIcon"></i>
+        </button>
+        
+        <div class="logo">F&D</div>
+        
+        <!-- Поиск -->
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" placeholder="Поиск...">
+        </div>
+        
+        <!-- Иконки справа -->
+        <div class="top-icons">
+            <button class="icon-btn chat-btn" title="Чат">
+                <i class="fas fa-comment-dots"></i>
+            </button>
+            
+            <button class="icon-btn questions-btn" title="Вопросы">
+                <i class="fas fa-question"></i>
+            </button>
+            
+            <button class="icon-btn notifications-btn" title="Уведомления">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">3</span>
+            </button>
+            
+            <button class="icon-btn user-btn" title="Пользователь">
+                <i class="fas fa-user-circle"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Левая боковая панель -->
+    <div class="sidebar" id="sidebar">
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="#" class="nav-link active">
+                    <i class="fas fa-home"></i> <span>Главная</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-shopping-cart"></i> <span>Заказы</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-newspaper"></i> <span>Новости</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-box"></i> <span>Товары</span>
+                </a>
+            </li>
+            
+            <!-- Помощь в сайдбаре -->
+            <div class="help-bottom-sidebar">
+                <a href="#" class="nav-link help-link">
+                    <i class="fas fa-question-circle"></i> <span>Помощь</span>
+                </a>
+            </div>
+        </ul>
+    </div>
+
+    <!-- Основное содержимое -->
+    <div class="content" id="content">
+        <!-- Верхние табы -->
+        <div class="top-tabs">
+            <div class="top-tab active">Мой магазин</div>
+            <div class="top-tab">Ваш сайт</div>
+            <div class="top-tab">Опубликовать сайт</div>
+            <div class="top-tab">Удалить сайт</div>
+        </div>
+
+        <h1 class="page-title">Главная</h1>
+        <p class="page-subtitle">Обзор вашего магазина и последние заказы</p>
+        
+        <!-- Основные кнопки -->
+        <div class="main-buttons">
+            <div class="main-btn add-product-btn">
+                <i class="fas fa-plus-circle"></i>
+                <span>Добавить товар</span>
+            </div>
+            
+            <div class="main-btn editor-btn">
+                <i class="fas fa-edit"></i>
+                <span>Редактор сайта</span>
+            </div>
+            
+            <div class="main-btn settings-btn">
+                <i class="fas fa-cog"></i>
+                <span>Настроить сайт</span>
+            </div>
+        </div>
+
+        <!-- Заказы -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">Заказы</h2>
+                <div class="view-all">Посмотреть все <i class="fas fa-chevron-right"></i></div>
+            </div>
+            
+            <div class="orders-container">
+                <div class="order-card new">
+                    <div class="order-header">
+                        <div class="order-title">Новые заказы</div>
+                    </div>
+                    <div class="order-info">
+                        <div class="order-count">0</div>
+                        <div class="order-amount">на 0 руб</div>
+                    </div>
+                </div>
+                
+                <div class="order-card processing">
+                    <div class="order-header">
+                        <div class="order-title">В обработке</div>
+                    </div>
+                    <div class="order-info">
+                        <div class="order-count">0</div>
+                        <div class="order-amount">на 0 руб</div>
+                    </div>
+                </div>
+                
+                <div class="order-card agreed">
+                    <div class="order-header">
+                        <div class="order-title">Согласован, нуждается в отправке</div>
+                    </div>
+                    <div class="order-info">
+                        <div class="order-count">0</div>
+                        <div class="order-amount">на 0 руб</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer class="footer">
+        <img class="logo__footer" src="/images/F&D__footer.svg" alt="Fabrics & Details - логотип">
+        <div class="footer__contacts">
+            <div class="footer__contact-item">
+                <img class="footer__phone-img" src="/images/Phone.svg" alt="Телефон">
+                <span class="footer__phone-text">+7 999 888 77 66</span>
+            </div>
+            <div class="footer__contact-item">
+                <img class="footer__location-img" src="/images/location_on.svg" alt="Адресс">
+                <span class="footer__location-text">г. Екатеринбург, ул. Мира 32</span>
+            </div>
+            <div class="footer__contact-item">
+                <img class="footer__mail-img" src="/images/mail.svg" alt="Email">
+                <span class="footer__mail-text">fd@mail.ru</span>
+            </div>
+        </div>
+
+        <div class="footer__container help__container">
+            <h3 class="footer__help-title">Помощь</h1>
+                <nav class="footer__nav">
+                    <a href="#" class="footer__link">Контакты</a>
+                    <a href="#" class="footer__link">Оплата</a>
+                    <a href="#" class="footer__link">Партнёрство</a>
+                    <a href="#" class="footer__link">Безопасность</a>
+                    <a href="#" class="footer__link">Условия обработки данных</a>
+                </nav>
+        </div>
+</footer>
+    <script src="scripts/admin.js"></script>
+</body>
+</html>

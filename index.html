@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/images/favicon.ico" />
+    <link rel="stylesheet" href="/styles/reset.css">
+    <link rel="stylesheet" href="/styles/variable.css">
+    <link rel="stylesheet" href="/styles/style.css">
+    <link rel="stylesheet" href="/styles/menu-fix.css">
+    <title>Fabrics & Details</title>
+</head>
+
+<body>
+    <!-- header должен быть таким: -->
+<header class="header">
+    <a href="/index.html" class="logo-link">
+        <img class="logo" src="/images/F&D.svg" alt="Fabrics & Details - логотип">
+    </a>
+    <div class="search__products-container">
+        <input type="text" class="product__search" name="product__search" placeholder="Найти на F&D"
+            aria-label="Поиск товаров">
+    </div>
+    
+    <!-- Меню -->
+    <div class="menu">
+        <button class="menu__btn">
+            <img class="menu__btn-img" alt="Cоздать магазин" src="/images/icon-shop.svg">
+            <span class="menu__btn-text">Создать магазин</span>
+        </button>
+        
+        <button class="menu__btn menu__btn-login">
+            <img class="menu__btn-img" alt="Войти в аккаунт" src="/images/icon-enter.svg">
+            <span class="menu__btn-text">Войти</span>
+        </button>
+        
+        <button class="menu__btn menu__btn-cart" onclick="window.location.href='/cart.html'">
+            <svg class="menu__btn-img cart" alt="Корзина товаров" xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512">
+                <path
+                    d="M351.9 329.506H206.81l-3.072-12.56H368.16l26.63-116.019-217.23-26.04-9.952-58.09h-50.4v21.946h31.894l35.233 191.246a32.927 32.927 0 1 0 36.363 21.462h100.244a32.825 32.825 0 1 0 30.957-21.945zM181.427 197.45l186.51 22.358-17.258 75.195H198.917z"
+                    data-name="Shopping Cart" />
+            </svg>
+            <span class="menu__btn-text">Корзина</span>
+        </button>
+    </div>
+</header>
+    <main class="main">
+        <div class="design_block"></div>
+        <!-- Карусель рекламных баннеров -->
+        <section class="promo-carousel" aria-label="Рекламные предложения">
+            <div class="carousel__track">
+                <div class="carousel__slide">
+                    <img src="/images/Gemini_Generated_Image_7082we7082we7082 1.png" alt="" class=" carousel__image">
+                </div>
+
+                <div class="carousel__slide active">
+                    <img src="/images/Gemini_Generated_Image_3rh4w53rh4w53rh4 1.png" alt="" class="carousel__image">
+                </div>
+
+                <div class="carousel__slide">
+                    <img src="/images/Gemini_Generated_Image_aes5tjaes5tjaes5 1.png" alt="" class="carousel__image">
+                </div>
+            </div>
+        </section>
+
+        <!-- Витрина -->
+        <section class="products__showcase" aria-labelledby="featured-products">
+            <div class="products-grid">
+                <!-- Карточки будут сгенерированы автоматически через JS -->
+            </div>
+        </section>
+
+        <!-- Модалка ВХОДА -->
+        <section class="modal section__login">
+            <button class="close__btn" type="button" aria-label="Закрыть окно"></button>
+            <h1 class="title__log">Вход</h1>
+            <form id="login-form" class="form">
+                <fieldset class="fieldset__login">
+                    <div class="input__group">
+                        <label for="text__to__log__in__to_current_account" class="visually-hidden">Логин></label>
+                        <input class="input" type="email" id="text__to__log__in__to_current_account"
+                            name="current_login__to__log_in" placeholder="Email" autocomplete="username" required>
+                    </div>
+                    <div class="input__group">
+                        <label for="login-password" class="visually-hidden">Пароль</label>
+                        <input class="input" type="password" id="login-password" name="password__for__log_in"
+                            placeholder="Пароль" autocomplete="current-password" required>
+                    </div>
+                    <a href="#" class="forgot_password">Забыли пароль?</a>
+                </fieldset>
+                <button class="button__login_in_fieldset" type="button" onclick="handleLogin()">Войти</button>
+            </form>
+            <p class="registration__btn">У вас нет аккаунта? Зарегистрируйтесь!</p>
+        </section>
+
+        <!-- Модалка РЕГИСТРАЦИИ -->
+        <section class="modal section__authorization">
+            <div class="container__navigation">
+                <button class="return__btn" type="button" aria-label="Вернуться ко входу в аккаунт"></button>
+                <button class="close__btn" type="button" aria-label="Закрыть окно"></button>
+            </div>
+            <h1 class="title__authorization">Регистрация</h1>
+            <form id="register-form" class="form">
+                <fieldset class="fieldset__authorization">
+                    <div class="input__group">
+                        <label for="register-username" class="visually-hidden">Логин</label>
+                        <input class="input" type="text" id="register-username" name="new_login_name"
+                            placeholder="Логин" required>
+                    </div>
+                    <div class="input__group">
+                        <label for="register-email" class="visually-hidden">Email</label>
+                        <input class="input" type="email" id="register-email" name="login__name" placeholder="Email"
+                            required>
+                    </div>
+                    <div class="input__group">
+                        <label for="register-password" class="visually-hidden">Пароль</label>
+                        <input class="input" type="password" id="register-password" name="password__to_authorization"
+                            placeholder="Пароль" autocomplete="new-password" required>
+                    </div>
+                    <div class="input__group">
+                        <label for="register-password2" class="visually-hidden">Подтверждение
+                            пароля</label>
+                        <input class="input" type="password" id="register-password2"
+                            name="repeate_password__to_authorization" placeholder="Подтверждение пароля"
+                            autocomplete="new-password" required>
+                    </div>
+                    <div class="checkbox__group">
+                        <label class="checkbox__label">
+                            <input type="checkbox" required>
+                            я выражаю согласие с условиями использования и политикой конфиденциальности
+                        </label>
+                    </div>
+                </fieldset>
+                <button class="button__authorization__fieldset" type="submit">Зарегистрироваться</button>
+            </form>
+        </section>
+    <footer class="footer">
+        <img class="logo__footer" src="/images/F&D__footer.svg" alt="Fabrics & Details - логотип">
+        <div class="footer__contacts">
+            <div class="footer__contact-item">
+                <img class="footer__phone-img" src="/images/Phone.svg" alt="Телефон">
+                <span class="footer__phone-text">+7 999 888 77 66</span>
+            </div>
+            <div class="footer__contact-item">
+                <img class="footer__location-img" src="/images/location_on.svg" alt="Адресс">
+                <span class="footer__location-text">г. Екатеринбург, ул. Мира 32</span>
+            </div>
+            <div class="footer__contact-item">
+                <img class="footer__mail-img" src="/images/mail.svg" alt="Email">
+                <span class="footer__mail-text">fd@mail.ru</span>
+            </div>
+        </div>
+
+        <div class="footer__container help__container">
+            <h3 class="footer__help-title">Помощь</h1>
+                <nav class="footer__nav">
+                    <a href="#" class="footer__link">Контакты</a>
+                    <a href="#" class="footer__link">Оплата</a>
+                    <a href="#" class="footer__link">Партнёрство</a>
+                    <a href="#" class="footer__link">Безопасность</a>
+                    <a href="#" class="footer__link">Условия обработки данных</a>
+                </nav>
+        </div>
+    </footer>
+    <script src="/scripts/mock-api-service.js"></script> 
+    <script src="/scripts/script.js"></script> 
+    <script src="/scripts/cart-manager.js"></script>
+    <script src="/scripts/cart-icon.js"></script>
+    <script src="/scripts/products-data.js"></script>
+    <script src="/scripts/products.js"></script>
+    <script src="/scripts/cart.js"></script>
+    <script src="/scripts/update-auth-button.js"></script>
+    
+
+</body>
+
+</html>
+

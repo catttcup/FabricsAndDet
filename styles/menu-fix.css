@@ -1,0 +1,85 @@
+/* Контейнер меню */
+.menu {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 15px !important;
+    margin-inline-start: 150x !important;
+    margin-block-start: -5px !important;
+    white-space: nowrap !important;
+}
+
+.menu__btn-text {
+    display: block !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    color: #fff !important;
+    text-align: center !important;
+    margin-top: 2px !important;
+    white-space: nowrap !important;
+    width: 100% !important;
+    /* УБИРАЕМ эти строки: */
+    /* overflow: hidden !important; */
+    /* text-overflow: ellipsis !important; */
+    overflow: visible !important; /* Добавляем */
+    text-overflow: clip !important; /* Меняем на clip */
+}
+
+/* Увеличиваем ширину кнопок для длинного текста */
+.menu__btn {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    block-size: 60px !important;
+    inline-size: 85px !important; /* Увеличиваем для длинного текста */
+    min-width: 85px !important;
+    max-width: 85px !important;
+    background-color: transparent !important;
+    border: none !important;
+    cursor: pointer !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    flex-shrink: 0 !important;
+}
+
+/* Первая кнопка еще шире */
+.menu__btn:first-child {
+    inline-size: 100px !important; /* Немного шире */
+    max-width: 100px !important;
+}
+
+
+
+/* Иконки */
+.menu__btn-img {
+    display: block !important;
+    block-size: 44px !important;
+    inline-size: 44px !important;
+    flex-shrink: 0 !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+/* Запретить любое слияние элементов */
+.menu__btn * {
+    display: block !important;
+    float: none !important;
+}
+
+/* Убрать любые inline стили, которые ломают верстку */
+.menu__btn[style*="inline"] {
+    display: flex !important;
+}
+
+/* Для ссылок внутри кнопок (если они есть) */
+.menu__btn a {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 100% !important;
+    text-decoration: none !important;
+    color: inherit !important;
+}

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>F&D - Личный кабинет</title>
+    <link rel="stylesheet" href="styles/lk.css">
+    <link rel="stylesheet" href="/styles/menu-fix.css">
+</head>
+<body>
+    <header class="header">
+    <a href="/index.html" class="logo-link">
+        <img class="logo" src="/images/F&D.svg" alt="F&D">
+    </a>
+    
+    <div class="search__products-container">
+        <input type="text" class="product__search" placeholder="Найти на F&D">
+    </div>
+    
+    <div class="menu">
+        <button class="menu__btn">
+            <img class="menu__btn-img" alt="Cоздать магазин" src="/images/icon-shop.svg">
+            <span class="menu__btn-text">Создать магазин</span>
+        </button>
+
+         <button class="menu__btn menu__btn-login">
+            <img class="menu__btn-img" alt="Личный Кабинет" src="/images/icon-enter.svg">
+            <span class="menu__btn-text">Личный кабинет</span>
+        </button>
+
+
+        <button class="menu__btn menu__btn-cart" onclick="window.location.href='/cart.html'">
+            <svg class="menu__btn-img cart" alt="Корзина товаров" xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512 " fill="#fff">
+                <path
+                    d="M351.9 329.506H206.81l-3.072-12.56H368.16l26.63-116.019-217.23-26.04-9.952-58.09h-50.4v21.946h31.894l35.233 191.246a32.927 32.927 0 1 0 36.363 21.462h100.244a32.825 32.825 0 1 0 30.957-21.945zM181.427 197.45l186.51 22.358-17.258 75.195H198.917z"
+                    data-name="Shopping Cart" />
+            </svg>
+            <span class="menu__btn-text">Корзина</span>
+        </button>
+    </div>
+</header>
+
+    <main class="main-container">
+        <!-- Левая колонка -->
+        <div class="left-sidebar">
+            <!-- Кошелек -->
+            <div class="card wallet">
+                <h2>Кошелёк</h2>
+                <div class="balance">300 ₽</div>
+                <button class="btn btn-primary">Пополнить</button>
+            </div>
+            
+            <!-- Меню пользователя -->
+            <div class="card user-menu">
+                <h2>Пользователь</h2>
+                <div class="user-links">
+                    <!-- Финансы - обычный текст, левее -->
+                    <div class="text-item left-align">Финансы</div>
+                    
+                    <!-- Кнопки оранжевые, правее -->
+                    <button class="orange-btn" onclick="showContent('payment')">Способы оплаты</button>
+                    <button class="orange-btn" onclick="showContent('requisites')">Реквизиты</button>
+                    
+                    <!-- Управление - обычный текст, левее -->
+                    <div class="text-item left-align">Управление</div>
+                    
+                    <!-- Кнопки оранжевые, правее -->
+                    <button class="orange-btn" onclick="showContent('settings')">Настройки</button>
+                    <button class="orange-btn" onclick="showContent('devices')">Ваши устройства</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Правая часть - всегда показываем покупки -->
+        <div class="main-content">
+    <!-- Покупки -->
+    <div class="card orders">
+        <div class="orders-header">
+            <h2>Покупки</h2>
+            <a href="#" class="view-all">Все ></a>
+        </div>
+        <div class="orders-content">
+            <div class="product-grid">
+                <!-- Карточка товара 1 -->
+                <div class="product-card">
+                    <div class="product-image pink-bg"></div>
+                    <div class="product-info">
+                        <h3 class="product-title">Товар 1</h3>
+                        <p class="product-description">Короткое описание товара</p>
+                    </div>
+                </div>
+                
+                <!-- Карточка товара 2 -->
+                <div class="product-card">
+                    <div class="product-image pink-bg"></div>
+                    <div class="product-info">
+                        <h3 class="product-title">Товар 2</h3>
+                        <p class="product-description">Короткое описание товара</p>
+                    </div>
+                </div>
+                
+                <!-- Карточка товара 3 -->
+                <div class="product-card">
+                    <div class="product-image pink-bg"></div>
+                    <div class="product-info">
+                        <h3 class="product-title">Товар 3</h3>
+                        <p class="product-description">Короткое описание товара</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Популярные товары -->
+    <div class="card orders">
+        <div class="orders-header">
+            <h2>Популярные товары</h2>
+            <a href="#" class="view-all">Все ></a>
+        </div>
+        <div class="orders-content">
+            <div class="product-grid">
+                <!-- Карточка товара 1 -->
+                <div class="product-card">
+                    <div class="product-image pink-bg"></div>
+                    <div class="product-info">
+                        <h3 class="product-title">Популярный товар 1</h3>
+                        <p class="product-description">Описание популярного товара</p>
+                    </div>
+                </div>
+                
+                <!-- Карточка товара 2 -->
+                <div class="product-card">
+                    <div class="product-image pink-bg"></div>
+                    <div class="product-info">
+                        <h3 class="product-title">Популярный товар 2</h3>
+                        <p class="product-description">Описание популярного товара</p>
+                    </div>
+                </div>
+                
+                <!-- Карточка товара 3 -->
+                <div class="product-card">
+                    <div class="product-image pink-bg"></div>
+                    <div class="product-info">
+                        <h3 class="product-title">Популярный товар 3</h3>
+                        <p class="product-description">Описание популярного товара</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    </main>
+
+    <script>
+        function showContent(type) {
+            if (type === 'payment') {
+                alert("Способы оплаты");
+            } else if (type === 'requisites') {
+                alert("Реквизиты");
+            } else if (type === 'settings') {
+                alert("Настройки");
+            } else if (type === 'devices') {
+                alert("Ваши устройства");
+            }
+        }
+    </script>
+   <footer class="footer">
+        <img class="logo__footer" src="/images/F&D__footer.svg" alt="Fabrics & Details - логотип">
+        <div class="footer__contacts">
+            <div class="footer__contact-item">
+                <img class="footer__phone-img" src="/images/Phone.svg" alt="Телефон">
+                <span class="footer__phone-text">+7 999 888 77 66</span>
+            </div>
+            <div class="footer__contact-item">
+                <img class="footer__location-img" src="/images/location_on.svg" alt="Адресс">
+                <span class="footer__location-text">г. Екатеринбург, ул. Мира 32</span>
+            </div>
+            <div class="footer__contact-item">
+                <img class="footer__mail-img" src="/images/mail.svg" alt="Email">
+                <span class="footer__mail-text">fd@mail.ru</span>
+            </div>
+        </div>
+
+        <div class="footer__container help__container">
+            <h3 class="footer__help-title">Помощь</h1>
+                <nav class="footer__nav">
+                    <a href="#" class="footer__link">Контакты</a>
+                    <a href="#" class="footer__link">Оплата</a>
+                    <a href="#" class="footer__link">Партнёрство</a>
+                    <a href="#" class="footer__link">Безопасность</a>
+                    <a href="#" class="footer__link">Условия обработки данных</a>
+                </nav>
+        </div>
+    </footer>
+    <script src="/scripts/mock-api-service.js"></script>
+    <script src="/scripts/auth-check.js"></script>
+    <script src="/scripts/cart-manager.js"></script>
+    <script src="/scripts/cart-icon.js"></script>
+    <script src="/scripts/script.js"></script>
+    <script src="/api-service.js"></script>
+    <script src="/scripts/cart.js"></script>
+</body>
+</html>
