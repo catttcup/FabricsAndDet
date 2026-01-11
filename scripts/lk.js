@@ -95,7 +95,6 @@ function updateLKHeader() {
     }
 }
 
-// Функция выхода (глобальная)
 window.logoutUser = function() {
     if (confirm('Вы действительно хотите выйти?')) {
         // Очищаем localStorage
@@ -103,6 +102,13 @@ window.logoutUser = function() {
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('user');
         localStorage.removeItem('isAuthenticated');
+        
+        // Используем apiService если он есть
+        if (window.apiService && apiService.logout) {
+            apiService.logout();
+        }
+        
+        console.log('✅ Пользователь вышел из системы');
         
         // Перенаправляем на главную
         window.location.href = '/index.html';

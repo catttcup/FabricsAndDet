@@ -217,3 +217,21 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
+window.logoutUser = function() {
+    if (confirm('Выйти из аккаунта?')) {
+        // Используем apiService
+        if (window.apiService && apiService.logout) {
+            apiService.logout();
+        }
+        
+        // Очищаем localStorage
+        localStorage.removeItem('user');
+        localStorage.removeItem('isAuthenticated');
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
+        
+        // Перезагружаем страницу или идем на главную
+        window.location.href = '/index.html';
+    }
+};

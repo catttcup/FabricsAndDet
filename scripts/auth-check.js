@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Проверка авторизации для ЛК...');
-    
+    setTimeout(() => {
+        checkAuthAndUpdateButton();
+    }, 100);
+
     // Проверяем, загружен ли apiService
     if (!window.apiService) {
         console.error('API service not loaded!');
@@ -29,7 +32,47 @@ document.addEventListener('DOMContentLoaded', function() {
     // Загружаем покупки пользователя (мок-данные)
     loadUserPurchases();
 });
+function checkAuthAndUpdateButton() {
+    // Проверяем, загружен ли apiService
+    if (!window.apiService) {
+        console.warn('API service not loaded, trying to initialize...');
+        // Пытаемся инициализировать, если не загружен
+        if (typeof MockApiService !== 'undefined') {
+            window.apiService = new MockApiService();
+            console.log('API service initialized manually');
+        } else {
+            console.error('API service not available!');
+            return;
+        }
+    }
+}
+ // ДЛЯ ЛК проверяем авторизацию строго
+if (window.location.pathname.includes('lk.html')) {
+        if (!apiService.isAuthenticated()) {
+            console.log('Пользователь не авторизован, перенаправляем...');
+            alert('Для доступа к личному кабинету необходимо войти в систему');
+            window.location.href = '/index.html';
+            return;
+        }
+        
+        console.log('Пользователь авторизован, загружаем ЛК...');
+        
+        // Загружаем данные пользователя
+        const user = apiService.getUser();
+        if (user) {
+            updateLKUserInfo(user);
+        }
+        
+        loadUserPurchases();
+    }
+    
+    // ДЛЯ КОРЗИНЫ И ДРУГИХ СТРАНИЦ - не проверяем авторизацию!
+    // Корзина доступна без авторизации
+    
+    // Для ВСЕХ страниц обновляем кнопку авторизации
+    updateAuthButtonOnAllPages();
 
+    
 function updateLKUserInfo(user) {
     console.log('Обновление информации ЛК для:', user);
     
