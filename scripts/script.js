@@ -216,7 +216,42 @@ document.addEventListener('DOMContentLoaded', function () {
             closeModal();
         }
     });
+    setupCreateShopButton();
 });
+
+// Функция для обработки кнопки "Создать магазин"
+function setupCreateShopButton() {
+    const createShopBtn = document.getElementById('createShopBtn') || 
+                         document.querySelector('.menu__btn-create-shop');
+    
+    if (!createShopBtn) return;
+    
+    createShopBtn.addEventListener('click', function(e) {
+        // Проверяем авторизацию
+        if (!window.apiService || !apiService.isAuthenticated()) {
+            e.preventDefault();
+            alert('Для создания магазина необходимо войти в систему');
+            
+            // Если на главной - открываем модалку входа
+            if (window.location.pathname.includes('index.html') || 
+                window.location.pathname === '/') {
+                const loginModal = document.querySelector('.section__login');
+                if (loginModal) {
+                    loginModal.style.display = 'block';
+                }
+            } else {
+                // На других страницах - предлагаем перейти на главную
+                if (confirm('Перейти на главную страницу для входа?')) {
+                    window.location.href = '/index.html';
+                }
+            }
+            return;
+        }
+        
+        // Если авторизован - переходим на страницу создания магазина
+        window.location.href = '/admin.html';
+    });
+}
 
 window.logoutUser = function() {
     if (confirm('Выйти из аккаунта?')) {

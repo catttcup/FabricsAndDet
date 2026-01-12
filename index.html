@@ -25,17 +25,20 @@
     
     <!-- Меню -->
     <div class="menu">
-        <button class="menu__btn">
-            <img class="menu__btn-img" alt="Cоздать магазин" src="/images/icon-shop.svg">
+        <!-- Кнопка Создать магазин - переход в админ-панель -->
+        <button class="menu__btn menu__btn-create-shop" id="createShopBtn">
+            <img class="menu__btn-img" alt="Создать магазин" src="images/icon-shop.svg">
             <span class="menu__btn-text">Создать магазин</span>
         </button>
         
-        <button class="menu__btn menu__btn-login">
-            <img class="menu__btn-img" alt="Войти в аккаунт" src="/images/icon-enter.svg">
+        <!-- Кнопка Войти - открывает модалку входа -->
+        <button class="menu__btn menu__btn-login" id="loginBtn">
+            <img class="menu__btn-img" alt="Войти в аккаунт" src="images/icon-enter.svg">
             <span class="menu__btn-text">Войти</span>
         </button>
         
-        <button class="menu__btn menu__btn-cart" onclick="window.location.href='/cart.html'">
+        <!-- Кнопка Корзина - переход на страницу корзины -->
+        <button class="menu__btn menu__btn-cart" onclick="window.location.href='cart.html'">
             <svg class="menu__btn-img cart" alt="Корзина товаров" xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 512 512">
                 <path
@@ -46,8 +49,8 @@
         </button>
     </div>
 </header>
-    <main class="main">
-        <div class="design_block"></div>
+        <main class="main">
+            <div class="design_block"></div>
         <!-- Карусель рекламных баннеров -->
         <section class="promo-carousel" aria-label="Рекламные предложения">
             <div class="carousel__track">

@@ -5,32 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>F&D - Админ-панель</title>
     <link rel="stylesheet" href="styles/admin.css">
+    <link rel="stylesheet" href="styles/modal.css"> <!-- ПОДКЛЮЧАЕМ modal.css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <!-- Модальное окно добавления товара -->
+    <div id="addProductModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 class="modal-title">Добавить товар</h2>
+            <form id="productForm">
+                <div class="form-group">
+                    <label class="form-label">Название товара</label>
+                    <input type="text" class="form-input" id="productName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Описание товара</label>
+                    <textarea class="form-textarea" id="productDescription" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Фото товара</label>
+                    <div class="file-upload" id="fileUploadArea">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Нажмите для загрузки фото</p>
+                        <div class="file-name" id="fileName">Файл не выбран</div>
+                    </div>
+                    <input type="file" id="productImage" accept="image/*" style="display: none;">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Цена (руб)</label>
+                    <input type="number" class="form-input" id="productPrice" min="0" step="0.01" required>
+                </div>
+                
+                <div class="modal-buttons">
+                    <button type="button" class="modal-btn secondary" id="cancelBtn">Отмена</button>
+                    <button type="submit" class="modal-btn primary">Добавить товар</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Верхняя панель -->
     <div class="top-bar">
-        <!-- Кнопка для скрытия/открытия меню -->
-        <button class="menu-toggle-btn" id="menuToggle">
-            <i class="fas fa-bars" id="menuIcon"></i>
-        </button>
-        
-        <div class="logo">F&D</div>
-        
-        <!-- Поиск -->
-        <div class="search-container">
-            <i class="fas fa-search search-icon"></i>
-            <input type="text" class="search-input" placeholder="Поиск...">
-        </div>
-        
+         <a href="/index.html" class="logo-link">
+        <img class="logo" src="/images/F&D.svg" alt="F&D">
+        </a>
         <!-- Иконки справа -->
         <div class="top-icons">
             <button class="icon-btn chat-btn" title="Чат">
                 <i class="fas fa-comment-dots"></i>
-            </button>
-            
-            <button class="icon-btn questions-btn" title="Вопросы">
-                <i class="fas fa-question"></i>
             </button>
             
             <button class="icon-btn notifications-btn" title="Уведомления">
@@ -38,53 +63,20 @@
                 <span class="notification-badge">3</span>
             </button>
             
-            <button class="icon-btn user-btn" title="Пользователь">
+            <button class="icon-btn user-btn" title="Пользователь" onclick="window.location.href='lk.html'">
                 <i class="fas fa-user-circle"></i>
             </button>
         </div>
-    </div>
-
-    <!-- Левая боковая панель -->
-    <div class="sidebar" id="sidebar">
-        <ul class="nav-menu">
-            <li class="nav-item">
-                <a href="#" class="nav-link active">
-                    <i class="fas fa-home"></i> <span>Главная</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="fas fa-shopping-cart"></i> <span>Заказы</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="fas fa-newspaper"></i> <span>Новости</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                    <i class="fas fa-box"></i> <span>Товары</span>
-                </a>
-            </li>
-            
-            <!-- Помощь в сайдбаре -->
-            <div class="help-bottom-sidebar">
-                <a href="#" class="nav-link help-link">
-                    <i class="fas fa-question-circle"></i> <span>Помощь</span>
-                </a>
-            </div>
-        </ul>
     </div>
 
     <!-- Основное содержимое -->
     <div class="content" id="content">
         <!-- Верхние табы -->
         <div class="top-tabs">
-            <div class="top-tab active">Мой магазин</div>
-            <div class="top-tab">Ваш сайт</div>
-            <div class="top-tab">Опубликовать сайт</div>
-            <div class="top-tab">Удалить сайт</div>
+            <div class="top-tab active" id="myShopTab">Мой магазин</div>
+            <div class="top-tab" id="mySiteTab">Ваш сайт</div>
+            <div class="top-tab" id="publishTab">Опубликовать сайт</div>
+            <div class="top-tab" id="deleteTab">Удалить сайт</div>
         </div>
 
         <h1 class="page-title">Главная</h1>
@@ -92,7 +84,7 @@
         
         <!-- Основные кнопки -->
         <div class="main-buttons">
-            <div class="main-btn add-product-btn">
+            <div class="main-btn" id="addProductBtn">
                 <i class="fas fa-plus-circle"></i>
                 <span>Добавить товар</span>
             </div>
@@ -112,7 +104,6 @@
         <div class="section">
             <div class="section-header">
                 <h2 class="section-title">Заказы</h2>
-                <div class="view-all">Посмотреть все <i class="fas fa-chevron-right"></i></div>
             </div>
             
             <div class="orders-container">

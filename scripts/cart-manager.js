@@ -150,3 +150,15 @@ window.cartManager = new CartManager();
 document.addEventListener('DOMContentLoaded', () => {
     window.cartManager.updateCartCounter();
 });
+
+CartManager.prototype.getCart = function() {
+    return this.cart;
+};
+
+CartManager.prototype.getTotalCount = function() {
+    return this.cart.reduce((total, item) => total + item.quantity, 0);
+};
+
+CartManager.prototype.getTotalPrice = function() {
+    return this.cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+};

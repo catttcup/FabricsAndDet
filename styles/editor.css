@@ -1,0 +1,752 @@
+/* editor.css - Стили для конструктора сайта */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+/* 1. Изменяем основной фон на FFF2F2 */
+body {
+    background-color: #FFF2F2; /* Новый цвет фона */
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Верхняя панель редактора */
+.editor-top-bar {
+    background-color: white;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    position: relative;
+}
+
+.editor-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.editor-btn {
+    background: none;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 8px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.editor-btn:hover {
+    background-color: #f5f5f5;
+    border-color: #999;
+}
+
+.editor-btn i {
+    font-size: 16px;
+}
+
+.editor-center h1 {
+    font-size: 20px;
+    color: #333;
+    font-weight: 600;
+}
+
+.editor-right-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.preview-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+}
+
+.preview-btn:hover {
+    background-color: #45a049;
+}
+
+.admin-btn {
+    background-color: #2196F3;
+    color: white;
+    border: none;
+}
+
+.admin-btn:hover {
+    background-color: #0b7dda;
+}
+
+.save-btn {
+    background-color: #B73131;
+    color: white;
+    border: none;
+}
+
+.save-btn:hover {
+    background-color: #9A2A2A;
+}
+
+/* Основной контейнер */
+.editor-container {
+    display: flex;
+    height: calc(100vh - 60px);
+}
+
+/* Левая панель - предпросмотр */
+.preview-panel {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    transition: all 0.3s;
+}
+
+.settings-panel.active + .preview-panel {
+    flex: 0 0 70%;
+}
+
+/* 2. Убираем белый фон у магазина, делаем прозрачным */
+.shop-preview {
+    background-color: transparent; /* Убираем белый фон */
+    border-radius: 12px;
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* 3. Шапка магазина - лого слева, название в строке */
+.preview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Равномерное распределение */
+    background-color: #892828;
+    padding: 0 30px;
+    height: 60px;
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+.preview-logo {
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s;
+    flex-shrink: 0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+
+.preview-logo:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.preview-shop-name {
+    font-size: 24px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-align: center;
+    background-color: transparent;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    box-shadow: none;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+}
+
+.preview-shop-name:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.header-spacer {
+    width: 40px;
+    height: 40px;
+    visibility: hidden;
+}
+
+/* 4. Блок рекламы - эффект скролла с обрезанными краями */
+.preview-ads {
+    background-color: transparent;
+    border-radius: 12px;
+    margin-bottom: 40px;
+    position: relative;
+    overflow: hidden;
+    min-height: 200px;
+    cursor: pointer;
+}
+.preview-header-controls {
+    display: none;
+    align-items: center;
+    gap: 15px;
+    margin-left: auto;
+}
+
+.ads-container {
+    display: flex;
+    gap: 20px;
+    padding: 0 40px;
+    position: relative;
+    width: calc(100% + 80px);
+    margin-left: -40px;
+}
+
+.ad-banner {
+    flex: 1;
+    min-width: 300px;
+    height: 200px;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s;
+}
+
+/* Эффект обрезанных краев для первой и последней картинки */
+.ad-banner:first-child {
+    margin-left: 0;
+    transform: perspective(1000px) rotateY(5deg);
+    mask-image: linear-gradient(to right, transparent 10%, black 30%);
+    -webkit-mask-image: linear-gradient(to right, transparent 10%, black 30%);
+}
+
+.ad-banner:last-child {
+    margin-right: 0;
+    transform: perspective(1000px) rotateY(-5deg);
+    mask-image: linear-gradient(to left, transparent 10%, black 30%);
+    -webkit-mask-image: linear-gradient(to left, transparent 10%, black 30%);
+}
+
+.ad-banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+}
+
+.ad-banner:hover img {
+    transform: scale(1.05);
+}
+
+/* Заглушка когда нет рекламы */
+.ads-placeholder {
+    background-color: #f8f8f8;
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    border: 3px dashed #ddd;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    font-size: 18px;
+    transition: all 0.3s;
+}
+
+.ads-placeholder:hover {
+    border-color: #B73131;
+    background-color: #f0f0f0;
+}
+
+.ads-placeholder i {
+    font-size: 48px;
+    margin-bottom: 15px;
+    display: block;
+}
+
+/* Товары - 4 карточки в ряд */
+.preview-products {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+}
+
+.product-card {
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    border-color: #B73131;
+}
+
+.product-card-image {
+    width: 100%;
+    height: 180px;
+    background-color: #FDB0B0;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.product-price {
+    font-size: 24px;
+    font-weight: 700;
+    color: #B73131;
+    margin-bottom: 8px;
+}
+
+.product-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 15px;
+    min-height: 45px;
+}
+
+.add-to-cart-btn {
+    width: 100%;
+    background-color: #B73131;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.add-to-cart-btn:hover {
+    background-color: #9A2A2A;
+}
+
+/* Правая панель - настройки (30% ширины) */
+.settings-panel {
+    flex: 0 0 0;
+    background-color: white;
+    border-left: 1px solid #ddd;
+    min-width: 0;
+    overflow-y: auto;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+.settings-panel.active {
+    flex: 0 0 30%;
+    max-width: 400px;
+    min-width: 300px;
+    padding: 20px;
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.settings-header h2 {
+    font-size: 20px;
+    color: #333;
+}
+
+.close-settings {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #888;
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.close-settings:hover {
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+/* Формы в настройках */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #B73131;
+    box-shadow: 0 0 0 2px rgba(183, 49, 49, 0.1);
+}
+
+.form-select {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: white;
+    cursor: pointer;
+}
+
+.form-range {
+    width: 100%;
+    height: 6px;
+    -webkit-appearance: none;
+    background: #ddd;
+    border-radius: 3px;
+    margin: 10px 0;
+}
+
+.form-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #B73131;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.form-color {
+    width: 100%;
+    height: 40px;
+    padding: 0;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* Кнопки в настройках */
+.settings-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.apply-btn {
+    flex: 1;
+    padding: 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.apply-btn:hover {
+    background-color: #45a049;
+}
+
+.cancel-btn {
+    flex: 1;
+    padding: 12px;
+    background-color: #f5f5f5;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.cancel-btn:hover {
+    background-color: #e0e0e0;
+}
+
+/* Загрузка изображений */
+.upload-area {
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-bottom: 20px;
+}
+
+.upload-area:hover {
+    border-color: #B73131;
+    background-color: #f9f9f9;
+}
+
+.upload-area i {
+    font-size: 36px;
+    color: #888;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.file-input {
+    display: none;
+}
+
+.upload-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.upload-btn:hover {
+    background-color: #0b7dda;
+}
+
+/* Стиль для трех изображений рекламы */
+.ads-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.ad-preview-item {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    height: 100px;
+    border: 2px solid #ddd;
+}
+
+.ad-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.remove-ad {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.clear-images {
+    width: 100%;
+    padding: 10px;
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: all 0.3s;
+}
+
+.clear-images:hover {
+    background-color: #ff5252;
+}
+
+/* Цвета для логотипа */
+.logo-colors {
+    margin-top: 20px;
+}
+
+.color-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.color-option {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.3s;
+}
+
+.color-option:hover {
+    transform: scale(1.1);
+}
+
+.color-option.active {
+    border-color: #333;
+    box-shadow: 0 0 0 2px white, 0 0 0 4px #333;
+}
+
+/* Превью карточки товара */
+.preview-card-example {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 20px;
+    background-color: white;
+    text-align: center;
+}
+
+.preview-card-image {
+    width: 100%;
+    height: 100px;
+    background-color: #FDB0B0;
+    border-radius: 6px;
+    margin-bottom: 15px;
+}
+
+.preview-price {
+    font-size: 20px;
+    font-weight: 700;
+    color: #B73131;
+    margin-bottom: 5px;
+}
+
+.preview-name {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.preview-add-btn {
+    width: 100%;
+    padding: 8px;
+    background-color: #B73131;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+/* Адаптивность */
+@media (max-width: 1200px) {
+    .preview-products {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .settings-panel.active {
+        flex: 0 0 35%;
+        min-width: 280px;
+    }
+    
+    .ads-container {
+        gap: 15px;
+        padding: 0 30px;
+        width: calc(100% + 60px);
+        margin-left: -30px;
+    }
+}
+
+@media (max-width: 992px) {
+    .settings-panel.active {
+        flex: 0 0 40%;
+        min-width: 250px;
+    }
+    
+    .preview-products {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .editor-container {
+        flex-direction: column;
+    }
+    
+    .settings-panel.active {
+        flex: 0 0 auto;
+        height: 300px;
+        border-left: none;
+        border-top: 1px solid #ddd;
+    }
+    
+    .editor-right-controls {
+        display: none;
+    }
+    
+    .preview-products {
+        grid-template-columns: 1fr;
+    }
+    
+    .preview-header {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+    
+    .preview-shop-name {
+        width: 100%;
+    }
+    
+    .ads-container {
+        flex-direction: column;
+        padding: 0;
+        width: 100%;
+        margin-left: 0;
+    }
+    
+    .ad-banner {
+        min-width: 100%;
+    }
+    
+    .ad-banner:first-child,
+    .ad-banner:last-child {
+        transform: none;
+        mask-image: none;
+        -webkit-mask-image: none;
+    }
+}

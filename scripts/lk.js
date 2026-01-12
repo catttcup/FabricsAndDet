@@ -76,6 +76,9 @@ function makeLKButtonInactive() {
         console.log('Кнопка в ЛК отключена');
     }
 }
+
+
+
 function updateLKHeader() {
     // Меняем текст кнопки "Войти" на "Личный кабинет"
     const loginBtn = document.querySelector('.menu__btn-login');

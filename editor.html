@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F&D - Конструктор сайта</title>
+    <link rel="stylesheet" href="styles/editor.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Панель управления сверху -->
+    <div class="editor-top-bar">
+        <div class="editor-controls">
+            <button class="editor-btn" id="undoBtn" title="Отменить">
+                <i class="fas fa-undo"></i>
+            </button>
+            <button class="editor-btn" id="redoBtn" title="Повторить">
+                <i class="fas fa-redo"></i>
+            </button>
+        </div>
+        
+        <div class="editor-center">
+            <h1>Конструктор сайта</h1>
+        </div>
+        
+        <div class="editor-right-controls">
+            <button class="editor-btn preview-btn" id="previewBtn">
+                <i class="fas fa-eye"></i> Предпросмотр
+            </button>
+            <button class="editor-btn admin-btn" id="adminBtn">
+                <i class="fas fa-cog"></i> В админку
+            </button>
+            <button class="editor-btn save-btn" id="saveBtn">
+                <i class="fas fa-save"></i> Сохранить
+            </button>
+        </div>
+    </div>
+
+    <!-- Основное содержимое -->
+    <div class="editor-container">
+        <!-- Левая панель - предпросмотр -->
+        <div class="preview-panel" id="previewPanel">
+            <div class="shop-preview">
+                <!-- Шапка магазина -->
+                <div class="preview-header">
+                    <!-- Логотип слева -->
+                    <div class="preview-logo" id="shopLogo">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    
+                    <!-- Название магазина по центру -->
+                    <h1 class="preview-shop-name" id="shopName">Название магазина</h1>
+                </div>
+                
+                <!-- Блок рекламы -->
+                <div class="preview-ads" id="adsContainer">
+                    <div class="ads-placeholder">
+                        <i class="fas fa-ad"></i>
+                        <p>Добавить рекламу</p>
+                    </div>
+                </div>
+                
+                <!-- Товары -->
+                <div class="preview-products" id="productsContainer">
+                    <!-- 4 карточки товара будут добавлены через JS -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Правая панель - настройки (изначально скрыта) -->
+        <div class="settings-panel" id="settingsPanel" style="display: none;">
+            <div class="settings-header">
+                <h2 id="settingsTitle">Настройки</h2>
+                <button class="close-settings" id="closeSettings">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="settings-content" id="settingsContent">
+                <!-- Настройки будут загружаться динамически -->
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/editor.js"></script>
+</body>
+</html>
