@@ -27,93 +27,127 @@ function switchTab(tabId) {
     }
 }
 
+// Функция выхода из профиля
+function handleLogout(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    if (confirm('Вы точно хотите выйти?')) {
+        // Устанавливаем флаг, что идет процесс выхода
+        if (window.setLoggingOut) {
+            window.setLoggingOut(true);
+        }
+        
+        // Очищаем данные пользователя - ВСЕ ключи!
+        if (window.userSimple && userSimple.logout) {
+            userSimple.logout();
+        } else {
+            // Если userSimple не доступен, очищаем localStorage вручную
+            // ВАЖНО: Очищаем ВСЕ ключи, которые могут хранить данные пользователя
+            localStorage.removeItem('username');        // ДЛЯ user-simple.js
+            localStorage.removeItem('currentUser');     // ДЛЯ apiService
+            localStorage.removeItem('userToken');       // ДЛЯ apiService  
+            localStorage.removeItem('userLoggedIn');    // ДЛЯ apiService
+            localStorage.removeItem('cartItems');       // Для корзины
+            
+            console.log('Все данные пользователя очищены');
+            
+            // Перенаправляем на главную страницу
+            setTimeout(() => {
+                window.location.href = '/index.html';
+            }, 100);
+        }
+    }
+    
+    return false;
+}
+
+// Проверка авторизации - с учётом ВСЕХ возможных ключей
+function isUserAuthenticated() {
+    // Проверяем все возможные способы хранения авторизации
+    const hasUsername = localStorage.getItem('username') !== null;
+    const hasCurrentUser = localStorage.getItem('currentUser') !== null;
+    const hasUserLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
+    const hasUserToken = localStorage.getItem('userToken') !== null;
+    
+    return hasUsername || hasCurrentUser || hasUserLoggedIn || hasUserToken;
+}
+
 // Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Страница загружена');
-    makeLKButtonInactive();
-    updateLKHeader();
+    console.log('LK.js загружен');
     
-    // Находим все кликабельные кнопки (orange-btn с data-tab)
-    const menuButtons = document.querySelectorAll('.user-links li.orange-btn[data-tab]');
+    // Используем userSimple для проверки авторизации
+    if (!window.userSimple || !userSimple.isAuthenticated()) {
+        console.log('Пользователь не авторизован, перенаправляем...');
+        alert('Для доступа к личному кабинету необходимо войти в систему');
+        window.location.href = '/index.html';
+        return;
+    }
     
-    // Добавляем обработчики клика
-    menuButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const tabId = this.getAttribute('data-tab');
-            switchTab(tabId);
-        });
-    });
-
-    // По умолчанию показываем "Покупки"
-    switchTab('purchases');
+    console.log('Пользователь авторизован');
     
-    // Для отладки
-    console.log('Найдено кликабельных кнопок:', menuButtons.length);
+    // Загружаем покупки
+    if (window.purchasesManager && purchasesManager.updatePurchasesDisplay) {
+        purchasesManager.updatePurchasesDisplay();
+    }
+    
+    // Обновляем данные пользователя
+    if (window.userSimple.updateUI) {
+        userSimple.updateUI();
+    }
+    
+    // Настраиваем кнопку выхода
+    setupLogoutButton();
 });
 
-function makeLKButtonInactive() {
-    const loginBtn = document.querySelector('.menu__btn-login');
-    if (loginBtn) {
-        // Меняем текст если нужно
-        const textSpan = loginBtn.querySelector('.menu__btn-text');
-        if (textSpan) {
-            textSpan.textContent = 'Личный кабинет';
-        }
-        
-        // Делаем не кликабельным
-        loginBtn.onclick = function(e) {
-            e.preventDefault();
-            return false;
-        };
-        
-        // Курсор по умолчанию
-        loginBtn.style.cursor = 'default';
-        
-        // НЕ меняем цвет! Оставляем как у других кнопок
-        loginBtn.style.opacity = '1';
-        loginBtn.style.filter = 'none';
-        
-        console.log('Кнопка в ЛК отключена');
+// Настройка кнопки выхода
+function setupLogoutButton() {
+    const logoutBtn = document.querySelector('.orange-btn-exit');
+    if (!logoutBtn) {
+        console.error('Кнопка выхода не найдена!');
+        return;
     }
+    
+    logoutBtn.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (confirm('Вы точно хотите выйти?')) {
+            // Используем userSimple для выхода
+            if (window.userSimple && userSimple.logout) {
+                userSimple.logout();
+            } else {
+                // Если userSimple не доступен, очищаем вручную
+                localStorage.removeItem('username');
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('userToken');
+                localStorage.removeItem('userLoggedIn');
+                localStorage.removeItem('isAuthenticated');
+                localStorage.removeItem('user');  
+                
+                alert('Вы вышли из аккаунта');
+                window.location.href = '/index.html';
+            }
+        }
+    };
+    
+    logoutBtn.style.cursor = 'pointer';
+    logoutBtn.title = 'Выйти из аккаунта';
+    console.log('Кнопка выхода настроена');
 }
 
-
-
-function updateLKHeader() {
-    // Меняем текст кнопки "Войти" на "Личный кабинет"
-    const loginBtn = document.querySelector('.menu__btn-login');
-    if (loginBtn) {
-        // Просто меняем текст, оставляя иконку
-        const textSpan = loginBtn.querySelector('.menu__btn-text');
-        if (textSpan) {
-            textSpan.textContent = 'Личный кабинет';
-        }
-        
-        // Делаем ее неактивной (ведь мы уже в ЛК)
-        loginBtn.style.opacity = '0.7';
-        loginBtn.style.cursor = 'default';
-        loginBtn.onclick = function(e) {
-            e.preventDefault(); // Предотвращаем переход
-        };
+// Функции для работы с вкладками
+function showContent(tabName) {
+    let title = '';
+    
+    if (tabName === 'payment') {
+        title = 'Способы оплаты';
+    } else if (tabName === 'requisites') {
+        title = 'Реквизиты';
+    } else if (tabName === 'devices') {
+        title = 'Ваши устройства';
     }
+    
+    alert(`Функция "${title}" находится в разработке`);
 }
-
-window.logoutUser = function() {
-    if (confirm('Вы действительно хотите выйти?')) {
-        // Очищаем localStorage
-        localStorage.removeItem('token');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('user');
-        localStorage.removeItem('isAuthenticated');
-        
-        // Используем apiService если он есть
-        if (window.apiService && apiService.logout) {
-            apiService.logout();
-        }
-        
-        console.log('✅ Пользователь вышел из системы');
-        
-        // Перенаправляем на главную
-        window.location.href = '/index.html';
-    }
-};

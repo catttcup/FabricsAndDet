@@ -21,6 +21,7 @@
     <div class="search__products-container">
         <input type="text" class="product__search" name="product__search" placeholder="Найти на F&D"
             aria-label="Поиск товаров">
+        <div class="search-results" style="display: none;"></div>
     </div>
     
     <!-- Меню -->
@@ -55,15 +56,15 @@
         <section class="promo-carousel" aria-label="Рекламные предложения">
             <div class="carousel__track">
                 <div class="carousel__slide">
-                    <img src="/images/Gemini_Generated_Image_7082we7082we7082 1.png" alt="" class=" carousel__image">
+                    <img src="images/Gemini_Generated_Image_7082we7082we7082.png" alt="" class=" carousel__image">
                 </div>
 
                 <div class="carousel__slide active">
-                    <img src="/images/Gemini_Generated_Image_3rh4w53rh4w53rh4 1.png" alt="" class="carousel__image">
+                    <img src="images/Gemini_Generated_Image_aes5tjaes5tjaes5.jpeg" alt="" class="carousel__image">
                 </div>
 
                 <div class="carousel__slide">
-                    <img src="/images/Gemini_Generated_Image_aes5tjaes5tjaes5 1.png" alt="" class="carousel__image">
+                    <img src="images/Gemini_Generated_Image_3rh4w53rh4w53rh4 1.png" alt="" class="carousel__image">
                 </div>
             </div>
         </section>
@@ -159,15 +160,17 @@
         <div class="footer__container help__container">
             <h3 class="footer__help-title">Помощь</h1>
                 <nav class="footer__nav">
-                    <a href="#" class="footer__link">Контакты</a>
-                    <a href="#" class="footer__link">Оплата</a>
-                    <a href="#" class="footer__link">Партнёрство</a>
-                    <a href="#" class="footer__link">Безопасность</a>
-                    <a href="#" class="footer__link">Условия обработки данных</a>
+                    <a href="#" class="footer__link" onclick="alert('Раздел \Контакты\ находится в разработке')">Контакты</a>
+                    <a href="#" class="footer__link" onclick="alert('Раздел \Оплата\ находится в разработке')">Оплата</a>
+                    <a href="#" class="footer__link" onclick="alert('Раздел \Партнёрство\ находится в разработке')">Партнёрство</a>
+                    <a href="#" class="footer__link" onclick="alert('Раздел \Безопасность\ находится в разработке')">Безопасность</a>
+                    <a href="#" class="footer__link" onclick="alert('Раздел \Условия обработки данных\ находится в разработке')">Условия обработки данных</a>
                 </nav>
         </div>
     </footer>
-    <script src="/scripts/mock-api-service.js"></script> 
+    <script src="/scripts/mock-api-service.js"></script>
+    <script src="/scripts/api-service.js"></script>
+    <script src="/scripts/user-simple.js"></script>
     <script src="/scripts/script.js"></script> 
     <script src="/scripts/cart-manager.js"></script>
     <script src="/scripts/cart-icon.js"></script>
@@ -175,7 +178,7 @@
     <script src="/scripts/products.js"></script>
     <script src="/scripts/cart.js"></script>
     <script src="/scripts/update-auth-button.js"></script>
-    
+        
 
 </body>
 

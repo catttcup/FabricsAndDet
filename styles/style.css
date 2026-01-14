@@ -124,7 +124,7 @@ body {
 .design_block {
     margin-block-start: 15px;
     block-size: 40px;
-    inline-size: 1100px;
+    inline-size: 100%;
     background-color: #FFA9A9;
     justify-self: center;
     border-radius: 12px;
@@ -179,9 +179,24 @@ body {
     margin-block-start: 8px;
     block-size: 236px;
     inline-size: 160px;
-    background-color: #FFA9A9;
+    background-color: #FFA9A9; /* Розовый фон если нет фото */
     border-radius: 14px;
     align-self: center;
+    overflow: hidden; /* Чтобы изображение не выходило за границы */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Чтобы изображение заполняло контейнер */
+    display: block;
+}
+
+/* Если изображение не загрузилось, показываем только розовый фон */
+.product-card__image:has(img[style*="display: none"]) {
+    background-color: #FFA9A9 !important;
 }
 
 .product-card__current-price {
@@ -838,4 +853,120 @@ body {
     max-width: 100% !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
+}
+/* Стили для поля поиска */
+.product__search {
+    width: 100%;
+    padding: 12px 20px;
+    border: 2px solid #FFA9A9;
+    border-radius: 25px;
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.product__search:focus {
+    border-color: #ff7b7b;
+    box-shadow: 0 0 0 3px rgba(255, 169, 169, 0.2);
+}
+
+/* Контейнер для поиска */
+.search__products-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto 30px;
+}
+
+/* Стили для поиска */
+.search__products-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto 30px;
+}
+
+.product__search {
+    width: 100%;
+    padding: 12px 20px;
+    border: 2px solid #FFA9A9;
+    border-radius: 25px;
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.product__search:focus {
+    border-color: #ff7b7b;
+    box-shadow: 0 0 0 3px rgba(255, 169, 169, 0.2);
+}
+
+/* Результаты поиска */
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin-top: 5px;
+    max-height: 400px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+}
+
+.results-list {
+    padding: 10px 0;
+}
+
+.search-result-item {
+    padding: 12px 15px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.search-result-item:hover {
+    background-color: #f9f9f9;
+}
+
+.search-result-item:last-child {
+    border-bottom: none;
+}
+
+.result-title {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.result-price {
+    font-size: 16px;
+    font-weight: 700;
+    color: #FF6B6B;
+}
+
+.highlight {
+    background-color: #FFF9C4;
+    padding: 0 2px;
+    border-radius: 2px;
+}
+
+.no-results {
+    padding: 20px;
+    text-align: center;
+    color: #666;
+}
+
+.no-results p {
+    margin: 0 0 10px 0;
+}
+
+.no-results .suggestion {
+    font-size: 14px;
+    color: #999;
 }

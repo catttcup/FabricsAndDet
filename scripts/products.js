@@ -21,24 +21,13 @@ function createProductCard(product) {
     article.className = 'product-card';
     article.dataset.id = product.id;
 
-    // Используем для форматирования с одной цифрой после запятой
-    function formatRating(rating) {
-        if (typeof rating === 'string') {
-            rating = rating.replace('.', ',');
-        }
-
-        const numRating = parseFloat(rating.toString().replace(',', '.'));
-
-        if (!isNaN(numRating)) {
-            return numRating.toFixed(1).replace('.', ',');
-        }
-
-        return '5,0';
-    }
-
+    // Простой HTML без сложной логики ошибок
     article.innerHTML = `
         <div class="product-card__image">
-            
+            <img src="${product.image}" 
+                 alt="${product.title}" 
+                 class="product-image"
+                 onerror="this.onerror=null; this.style.display='none'; this.parentElement.style.backgroundColor='#FFA9A9';">
         </div>
         <div class="product-card__info">
             <div class="product-card__price">
@@ -51,12 +40,8 @@ function createProductCard(product) {
                     <span class="product-card__stock"></span>
                 </div>
             </div>
-            <div class="product-card__rating" aria-label="Рейтинг: ${formatRating(product.rating)} из 5 звезд">
-                <img class="rating__star" alt="Звезда рейтинга" src="/images/star_filled.svg">
-                <span class="rating__value">${formatRating(product.rating)}</span>
-            </div>
         </div>
-        <button class="product-card__cart-btn" data-product-id="${product.id}">Добавить в корзину</button>
+        <button class="product-card__cart-btn" data-product-id="${product.id}">В корзину</button>
     `;
 
     return article;
@@ -65,7 +50,8 @@ function createProductCard(product) {
 function addProductCardEventListeners() {
     // Обработчик кнопок "Добавить в корзину"
     document.querySelectorAll('.product-card__cart-btn').forEach(btn => {
-        btn.addEventListener('click', function () {
+        btn.addEventListener('click', function (e) {
+            e.stopPropagation(); // Останавливаем всплытие
             const productId = parseInt(this.dataset.productId);
             const product = window.productsData.find(p => p.id === productId);
 
@@ -81,48 +67,68 @@ function addProductCardEventListeners() {
             // Если кликнули не по кнопке "Добавить в корзину"
             if (!e.target.closest('.product-card__cart-btn')) {
                 const productId = parseInt(this.dataset.id);
+                console.log('Клик по карточке товара:', productId, product.title);
                 // window.location.href = `/product.html?id=${productId}`;
-                console.log('Переход на страницу товара:', productId);
             }
         });
     });
 }
+async function addToCart(product) {
+    // Если пользователь авторизован - добавляем через API
+    if (window.apiService && window.apiService.isAuthenticated()) {
+        const result = await window.apiService.addToCart(product);
 
-function addToCart(product) {
-    if (window.cartManager) {
-        window.cartManager.addItem({
-            id: product.id,
-            title: product.title,
-            price: product.price,
-            image: product.image
-        });
+        if (result.success) {
+            showNotification(`Товар "${product.title}" добавлен в корзину!`, 'success');
 
-        // Показываем уведомление
-        showNotification(`Товар "${product.title}" добавлен в корзину!`, 'success');
+            // Обновляем локальную корзину для синхронизации
+            if (window.cartManager) {
+                window.cartManager.addItem({
+                    id: product.id,
+                    title: product.title,
+                    price: product.price,
+                    image: product.image
+                });
+            }
+        }
     } else {
-        // Локальное сохранение
-        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-        const existingItem = cart.find(item => item.id === product.id);
-
-        if (existingItem) {
-            existingItem.quantity += 1;
-        } else {
-            cart.push({
+        // Если не авторизован - используем localStorage
+        if (window.cartManager) {
+            window.cartManager.addItem({
                 id: product.id,
                 title: product.title,
                 price: product.price,
-                image: product.image,
-                quantity: 1
+                image: product.image
             });
+        } else {
+            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const existingItem = cart.find(item => item.id === product.id);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: product.id,
+                    title: product.title,
+                    price: product.price,
+                    image: product.image,
+                    quantity: 1
+                });
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
         }
 
-        localStorage.setItem('cart', JSON.stringify(cart));
         showNotification(`Товар "${product.title}" добавлен в корзину!`, 'success');
 
-        // Обновляем счётчик
-        if (window.cartManager) {
-            window.cartManager.updateCartCounter();
-        }
+        // Показываем предложение войти
+        setTimeout(() => {
+            if (!window.apiService?.isAuthenticated()) {
+                if (confirm('Хотите войти, чтобы сохранить корзину на сервере?')) {
+                    openLoginModal();
+                }
+            }
+        }, 1000);
     }
 }
 
@@ -165,8 +171,7 @@ function showNotification(message, type = 'success') {
             @keyframes slideOut {
                 from { transform: translateX(0); opacity: 1; }
                 to { transform: translateX(100%); opacity: 0; }
-            }
-        `;
+        }`;
         document.head.appendChild(style);
     }
 }
@@ -174,3 +179,164 @@ function showNotification(message, type = 'success') {
 function formatPrice(price) {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 }
+
+// === ПОИСК ТОВАРОВ ===
+
+// Инициализация поиска
+function initSearch() {
+    const searchInput = document.querySelector('.product__search');
+    if (!searchInput) {
+        console.log('Поле поиска не найдено');
+        return;
+    }
+    
+    console.log('Инициализация поиска...');
+    
+    // Создаем контейнер для результатов поиска
+    const resultsContainer = document.createElement('div');
+    resultsContainer.className = 'search-results';
+    searchInput.parentNode.appendChild(resultsContainer);
+    
+    // Получаем все карточки товаров
+    const productCards = document.querySelectorAll('.product-card');
+    console.log(`Найдено ${productCards.length} карточек товаров`);
+    
+    // Функция поиска
+    function performSearch(searchTerm) {
+        const term = searchTerm.toLowerCase().trim();
+        
+        if (term.length === 0) {
+            // Показываем все карточки
+            productCards.forEach(card => {
+                card.style.display = 'block';
+            });
+            resultsContainer.style.display = 'none';
+            return;
+        }
+        
+        // Ищем среди товаров в массиве window.productsData
+        const foundProducts = window.productsData.filter(product => 
+            product.title.toLowerCase().includes(term)
+        );
+        
+        // Показываем/скрываем карточки
+        productCards.forEach(card => {
+            const productId = parseInt(card.dataset.id);
+            const shouldShow = foundProducts.some(product => product.id === productId);
+            card.style.display = shouldShow ? 'block' : 'none';
+        });
+        
+        // Показываем результаты в выпадающем списке
+        showSearchResults(foundProducts, term);
+    }
+    
+    // Показ результатов в выпадающем списке
+    function showSearchResults(products, searchTerm) {
+        if (products.length === 0) {
+            resultsContainer.innerHTML = `
+                <div class="no-results">
+                    <p>По запросу "<strong>${searchTerm}</strong>" ничего не найдено</p>
+                    <p class="suggestion">Попробуйте изменить запрос</p>
+                </div>
+            `;
+            resultsContainer.style.display = 'block';
+            return;
+        }
+        
+        let html = '<div class="results-list">';
+        products.forEach(product => {
+            html += `
+                <div class="search-result-item" data-id="${product.id}">
+                    <div class="result-title">${highlightText(product.title, searchTerm)}</div>
+                    <div class="result-price">${formatPrice(product.price)} ₽</div>
+                </div>
+            `;
+        });
+        html += '</div>';
+        resultsContainer.innerHTML = html;
+        resultsContainer.style.display = 'block';
+        
+        // Добавляем обработчики кликов на результаты
+        resultsContainer.querySelectorAll('.search-result-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const productId = parseInt(this.dataset.id);
+                scrollToProduct(productId);
+            });
+        });
+    }
+    
+    // Подсветка найденного текста
+    function highlightText(text, term) {
+        if (!term) return text;
+        const regex = new RegExp(`(${term})`, 'gi');
+        return text.replace(regex, '<span class="highlight">$1</span>');
+    }
+    
+    // Прокрутка к товару
+    function scrollToProduct(productId) {
+        const targetCard = document.querySelector(`.product-card[data-id="${productId}"]`);
+        if (targetCard) {
+            targetCard.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center' 
+            });
+            
+            // Подсвечиваем карточку
+            targetCard.style.transition = 'background-color 0.5s';
+            targetCard.style.backgroundColor = '#FFF9C4';
+            setTimeout(() => {
+                targetCard.style.backgroundColor = '';
+            }, 1500);
+            
+            // Скрываем результаты поиска
+            resultsContainer.style.display = 'none';
+        }
+    }
+    
+    // Обработчик ввода с задержкой
+    let searchTimeout;
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            performSearch(this.value);
+        }, 300);
+    });
+    
+    // Закрытие результатов при клике вне
+    document.addEventListener('click', function(event) {
+        if (!searchInput.contains(event.target) && !resultsContainer.contains(event.target)) {
+            resultsContainer.style.display = 'none';
+        }
+    });
+    
+    // Обработчик клавиши Escape
+    searchInput.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            resultsContainer.style.display = 'none';
+        }
+    });
+    
+    console.log('Поиск инициализирован');
+}
+
+// Добавьте вызов initSearch в DOMContentLoaded
+document.addEventListener('DOMContentLoaded', function () {
+    const productsGrid = document.querySelector('.products-grid');
+
+    if (!productsGrid || !window.productsData) return;
+
+    // Очищаем старые карточки (если есть)
+    productsGrid.innerHTML = '';
+
+    // Генерируем карточки товаров
+    window.productsData.forEach(product => {
+        const productCard = createProductCard(product);
+        productsGrid.appendChild(productCard);
+    });
+
+    // Добавляем обработчики событий
+    addProductCardEventListeners();
+    
+    // Инициализируем поиск после создания карточек
+    setTimeout(initSearch, 100);
+});

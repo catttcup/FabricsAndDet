@@ -1,4 +1,3 @@
-// Упрощенный единый скрипт для рендера корзины
 document.addEventListener('DOMContentLoaded', function() {
     renderCart();
     

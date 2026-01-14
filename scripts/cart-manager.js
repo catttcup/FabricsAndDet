@@ -1,5 +1,6 @@
 class CartManager {
     constructor() {
+        this.storageKey = 'cart';
         this.cart = this.loadCart();
     }
 
@@ -141,9 +142,45 @@ class CartManager {
             document.head.appendChild(style);
         }
     }
+
+    // Метод оформления заказа (переносит товары в покупки)
+    checkout() {
+        if (this.cart.length === 0) {
+            this.showNotification('Корзина пуста', 'error');
+            return false;
+        }
+        
+        // Сохраняем копию товаров для покупок
+        const itemsToPurchase = [...this.cart];
+        
+        // Очищаем корзину
+        this.clearCart();
+        
+        // Добавляем в покупки
+        if (window.purchasesManager && purchasesManager.addPurchase) {
+            purchasesManager.addPurchase(itemsToPurchase);
+            this.showNotification('Заказ оформлен успешно!', 'success');
+            return true;
+        } else {
+            this.showNotification('Ошибка: менеджер покупок не доступен', 'error');
+            return false;
+        }
+    }
+    migrateCartToUser() {
+        const guestCart = localStorage.getItem('cart');
+        if (guestCart ) {
+            // Отправляем товары на сервер
+            const cart = JSON.parse(guestCart);
+            cart.forEach(item => {
+                // Отправляем каждый товар на сервер
+            });
+            
+            // Очищаем локальную гостевую корзину
+            localStorage.removeItem('cart');
+        }
+    }
 }
 
-// Создаём глобальный экземпляр
 window.cartManager = new CartManager();
 
 // Инициализируем счётчик при загрузке

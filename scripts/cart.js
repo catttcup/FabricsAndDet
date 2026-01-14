@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', function () {
     let cartData = window.cartManager ? window.cartManager.cart : [];
     console.log('Cart data from manager:', cartData);
 
-    // Получаем элементы
     const cartContainer = document.querySelector('.cart-container');
     const cartBox = document.getElementById('cartBox');
     const cartItemsList = document.getElementById('cartItemsList');
@@ -14,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const checkoutBtnContainer = document.getElementById('checkoutBtnContainer');
 
     // Инициализация корзины
-    function initCart() {
+    async function initCart() {
         console.log('Initializing cart with', cartData.length, 'items');
 
         if (cartData.length > 0) {
@@ -25,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Слушаем события обновления корзины
-        window.addEventListener('cartUpdated', function() {
+        window.addEventListener('cartUpdated', function () {
             cartData = window.cartManager.cart;
             renderCartItems();
             updateCartVisibility();
@@ -79,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function () {
         row.dataset.id = item.id;
 
         const imageUrl = item.image || '/images/product-placeholder.jpg';
-        
+
         row.innerHTML = `
             <div class="cart-item-img">
                 <img src="${imageUrl}" alt="${item.title}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iODAiIGhlaWdodD0iODAiIHJ4PSIxMCIgZmlsbD0iI0ZEQjBCMCIvPjwvc3ZnPg=='">
@@ -131,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Обновить итоговую сумму
     function updateTotalPrice() {
         if (!totalPriceElement) return;
-        
+
         let totalPrice = 0;
         if (window.cartManager) {
             totalPrice = window.cartManager.getTotalPrice();
@@ -140,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 totalPrice += item.price * item.quantity;
             });
         }
-        
+
         totalPriceElement.textContent = formatPrice(totalPrice) + ' ₽';
     }
 
@@ -154,18 +153,45 @@ document.addEventListener('DOMContentLoaded', function () {
     if (checkoutBtn) {
         checkoutBtn.addEventListener('click', function (e) {
             e.preventDefault();
-            
+
             if (cartData.length === 0) {
                 alert('Добавьте товары в корзину перед оформлением заказа');
                 return;
             }
 
+            // Проверяем авторизацию
             if (!window.apiService || !window.apiService.isAuthenticated()) {
-                alert('Для оформления заказа необходимо войти в систему');
-                return;
+                if (confirm('Для оформления заказа необходимо войти в систему. Перейти к авторизации?')) {
+                    // Перенаправляем на страницу входа или открываем модалку
+                    if (window.openModal && window.loginModal) {
+                        window.openModal(window.loginModal);
+                    } else {
+                        // Если нет модалки - перенаправляем
+                        window.location.href = 'index.html';
+                    }
+                }
+                return; // Прерываем выполнение для неавторизованных
             }
 
-            alert('Оформление заказа находится в разработке');
+            // Для авторизованных пользователей
+            if (confirm(`Оформить заказ на ${cartData.length} товар(ов) общей стоимостью ${totalPriceElement.textContent}?`)) {
+                // Используем cartManager для оформления
+                if (window.cartManager && cartManager.checkout) {
+                    const success = cartManager.checkout();
+                    
+                    if (success) {
+                        // Обновляем отображение корзины
+                        showEmptyCart();
+                        
+                        // Показываем уведомление
+                        setTimeout(() => {
+                            alert('Товары оформлены! Вы можете посмотреть их в разделе "Покупки" в личном кабинете.');
+                        }, 300);
+                    }
+                } else {
+                    alert('Ошибка: менеджер корзины не доступен');
+                }
+            }
         });
     }
 
@@ -177,10 +203,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Инициализация
     initCart();
 
-    // Добавляем стиль для анимации
     if (!document.querySelector('#cart-animations')) {
         const style = document.createElement('style');
         style.id = 'cart-animations';

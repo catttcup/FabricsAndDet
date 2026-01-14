@@ -290,3 +290,29 @@ body {
 .back-to-main-btn:hover {
     background: #f0f0f0;
 }
+
+/* Стили для карточек покупок в ЛК */
+.product-card .product-image img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px 8px 0 0;
+}
+
+.product-price {
+    color: #B73131;
+    font-weight: bold;
+    margin-top: 5px;
+    font-size: 16px;
+}
+
+.no-purchases {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    font-size: 16px;
+}
+
+.no-purchases p {
+    margin: 0;
+}

@@ -1,4 +1,3 @@
-// [file name]: cart-icon.js
 document.addEventListener('DOMContentLoaded', function () {
     // Функция для обновления счётчика товаров в корзине
     function updateCartCounter() {
@@ -80,7 +79,6 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.setItem('cart', JSON.stringify(cart));
         updateCartCounter();
 
-        // Показываем уведомление
         alert(`Товар "${title}" добавлен в корзину!`);
     }
 });

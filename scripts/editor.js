@@ -1,11 +1,7 @@
-// editor.js - Логика конструктора сайта
-
 document.addEventListener('DOMContentLoaded', function() {
-    // История изменений
     let history = [];
     let historyIndex = -1;
     
-    // Текущие настройки
     let currentSettings = {
         page: {
             bgColor: '#FFF2F2'
@@ -32,11 +28,12 @@ document.addEventListener('DOMContentLoaded', function() {
             font: 'Arial, sans-serif',
             fontSize: 18,
             cardBgColor: '#FFFFFF',
-            buttonColor: '#B73131'
+            buttonColor: '#B73131',
+            buttonTextColor: '#FFFFFF', 
+            priceColor: '#B73131'
         }
     };
 
-    // Элементы DOM
     const shopLogo = document.getElementById('shopLogo');
     const shopName = document.getElementById('shopName');
     const adsContainer = document.getElementById('adsContainer');
@@ -56,7 +53,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Текущий редактируемый элемент
     let currentEditingElement = null;
     
-    // Инициализация
     function init() {
         loadSavedSettings();
         saveState();
@@ -102,16 +98,18 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Обновление стилей одной карточки
     function updateProductCardStyles(card) {
-        const nameElement = card.querySelector('.product-name');
-        const priceElement = card.querySelector('.product-price');
-        const buttonElement = card.querySelector('.add-to-cart-btn');
-        
-        priceElement.textContent = formatPrice(currentSettings.product.price) + ' ₽';
-        nameElement.textContent = currentSettings.product.name;
-        nameElement.style.fontFamily = currentSettings.product.font;
-        nameElement.style.fontSize = currentSettings.product.fontSize + 'px';
-        card.style.backgroundColor = currentSettings.product.cardBgColor;
-        buttonElement.style.backgroundColor = currentSettings.product.buttonColor;
+    const nameElement = card.querySelector('.product-name');
+    const priceElement = card.querySelector('.product-price');
+    const buttonElement = card.querySelector('.add-to-cart-btn');
+    
+    priceElement.textContent = formatPrice(currentSettings.product.price) + ' ₽';
+    priceElement.style.color = currentSettings.product.priceColor || '#B73131';
+    nameElement.textContent = currentSettings.product.name;
+    nameElement.style.fontFamily = currentSettings.product.font;
+    nameElement.style.fontSize = currentSettings.product.fontSize + 'px';
+    card.style.backgroundColor = currentSettings.product.cardBgColor;
+    buttonElement.style.backgroundColor = currentSettings.product.buttonColor;
+    buttonElement.style.color = currentSettings.product.buttonTextColor || '#FFFFFF';
     }
     
     // Сохранение состояния в историю
@@ -240,12 +238,13 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="form-group logo-colors">
                 <label>Цвет фона логотипа:</label>
                 <div class="color-grid">
-                    <div class="color-option ${currentSettings.logo.bgColor === '#B73131' ? 'active' : ''}" data-color="#B73131" style="background-color: #B73131;"></div>
-                    <div class="color-option ${currentSettings.logo.bgColor === '#4CAF50' ? 'active' : ''}" data-color="#4CAF50" style="background-color: #4CAF50;"></div>
-                    <div class="color-option ${currentSettings.logo.bgColor === '#2196F3' ? 'active' : ''}" data-color="#2196F3" style="background-color: #2196F3;"></div>
-                    <div class="color-option ${currentSettings.logo.bgColor === '#FF9800' ? 'active' : ''}" data-color="#FF9800" style="background-color: #FF9800;"></div>
-                    <div class="color-option ${currentSettings.logo.bgColor === '#9C27B0' ? 'active' : ''}" data-color="#9C27B0" style="background-color: #9C27B0;"></div>
-                </div>
+                <div class="color-option ${currentSettings.logo.bgColor === '#B73131' ? 'active' : ''}" data-color="#B73131" style="background-color: #B73131;"></div>
+                <div class="color-option ${currentSettings.logo.bgColor === '#4CAF50' ? 'active' : ''}" data-color="#4CAF50" style="background-color: #4CAF50;"></div>
+                <div class="color-option ${currentSettings.logo.bgColor === '#2196F3' ? 'active' : ''}" data-color="#2196F3" style="background-color: #2196F3;"></div>
+                <div class="color-option ${currentSettings.logo.bgColor === '#FF9800' ? 'active' : ''}" data-color="#FF9800" style="background-color: #FF9800;"></div>
+                <div class="color-option ${currentSettings.logo.bgColor === '#9C27B0' ? 'active' : ''}" data-color="#9C27B0" style="background-color: #9C27B0;"></div>
+                <div class="color-option ${currentSettings.logo.bgColor === 'rgba(255, 255, 255, 0.1)' ? 'active' : ''}" data-color="rgba(255, 255, 255, 0.1)" style="background-color: rgba(255, 255, 255, 0.1); border: 1px solid #ddd;"></div>
+            </div>
             </div>
             
             <div class="settings-buttons">
@@ -404,10 +403,14 @@ document.addEventListener('DOMContentLoaded', function() {
         
         adsFileInput.addEventListener('change', function(e) {
             const files = Array.from(e.target.files).slice(0, 3);
-            
+
+            console.log('Загружаемые файлы:', files.length, 'шт');
+
             files.forEach((file, index) => {
                 if (file && index < 3) {
+                    console.log(`Обработка файла ${index}:`, file.name); 
                     compressImage(file, 0.7, 600).then(compressedDataUrl => {
+                        console.log(`Файл ${index} сжат успешно, длина:`, compressedDataUrl.length);
                         currentSettings.ads.images[index] = compressedDataUrl;
                         saveState();
                         renderPreview();
@@ -416,6 +419,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         console.error('Ошибка сжатия:', error);
                         const reader = new FileReader();
                         reader.onload = function(event) {
+                            console.log(`Файл ${index} загружен, длина:`, event.target.result.length);
                             currentSettings.ads.images[index] = event.target.result;
                             saveState();
                             renderPreview();
@@ -617,12 +621,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 <label>Цвет кнопки:</label>
                 <input type="color" id="buttonColor" value="${currentSettings.product.buttonColor}" class="form-color">
             </div>
+
+            <div class="form-group">
+                <label>Цвет текста кнопки:</label>
+                <input type="color" id="buttonTextColor" value="${currentSettings.product.buttonTextColor || '#FFFFFF'}" class="form-color">
+            </div>
+
+            <div class="form-group">
+                <label>Цвет ценника:</label>
+                <input type="color" id="priceColor" value="${currentSettings.product.priceColor || '#B73131'}" class="form-color">
+            </div>
             
             <div class="preview-card-example">
                 <div class="preview-card-image"></div>
-                <div class="preview-price" id="previewPrice">${formatPrice(currentSettings.product.price)} ₽</div>
+                <div class="preview-price" id="previewPrice" style="color: ${currentSettings.product.priceColor || '#B73131'};">${formatPrice(currentSettings.product.price)} ₽</div>
                 <div class="preview-name" id="previewName">${currentSettings.product.name}</div>
-                <button class="preview-add-btn" id="previewButton">Добавить в корзину</button>
+                <button class="preview-add-btn" id="previewButton" style="background-color: ${currentSettings.product.buttonColor}; color: ${currentSettings.product.buttonTextColor || '#FFFFFF'};">Добавить в корзину</button>
             </div>
             
             <div class="settings-buttons">
@@ -642,18 +656,24 @@ document.addEventListener('DOMContentLoaded', function() {
         const applyBtn = document.getElementById('applyProductBtn');
         
         function updateProductPreview() {
-            document.getElementById('previewPrice').textContent = formatPrice(productPriceInput.value) + ' ₽';
-            document.getElementById('previewName').textContent = productNameInput.value;
-            document.getElementById('previewName').style.fontFamily = productFontSelect.value;
-            document.getElementById('previewName').style.fontSize = productFontSizeSlider.value + 'px';
-            document.getElementById('previewButton').style.backgroundColor = buttonColor.value;
-            
             currentSettings.product.name = productNameInput.value;
             currentSettings.product.price = parseInt(productPriceInput.value);
             currentSettings.product.font = productFontSelect.value;
             currentSettings.product.fontSize = parseInt(productFontSizeSlider.value);
             currentSettings.product.cardBgColor = cardBgColor.value;
             currentSettings.product.buttonColor = buttonColor.value;
+            currentSettings.product.buttonTextColor = buttonTextColor.value; 
+            currentSettings.product.priceColor = priceColor.value; 
+            
+            // Теперь обновляем preview
+            document.getElementById('previewPrice').textContent = formatPrice(currentSettings.product.price) + ' ₽';
+            document.getElementById('previewPrice').style.color = currentSettings.product.priceColor;
+            document.getElementById('previewName').textContent = currentSettings.product.name;
+            document.getElementById('previewName').style.fontFamily = currentSettings.product.font;
+            document.getElementById('previewName').style.fontSize = currentSettings.product.fontSize + 'px';
+            document.getElementById('previewButton').style.backgroundColor = currentSettings.product.buttonColor;
+            document.getElementById('previewButton').style.color = currentSettings.product.buttonTextColor;
+    
             
             updateAllProductCards();
             saveState();
@@ -674,6 +694,8 @@ document.addEventListener('DOMContentLoaded', function() {
             saveState();
             closeSettings();
         });
+        buttonTextColor.addEventListener('input', updateProductPreview);
+        priceColor.addEventListener('input', updateProductPreview);
     }
     
     // Закрытие панели настроек
@@ -752,73 +774,123 @@ document.addEventListener('DOMContentLoaded', function() {
             window.location.href = 'admin.html';
         });
         
-        saveBtn.addEventListener('click', saveSettings);
-    }
-    
-    // Сохранение настроек
-    function saveSettings() {
-        console.log('Сохранение настроек...');
-        
+        saveBtn.addEventListener('click', function() {
+            saveSiteDesign(); 
+});
+
+    // Функция для сохранения дизайна сайта
+    function saveSiteDesign() {
+        console.log('Сохранение дизайна сайта...');
+        console.log('Текущие баннеры в currentSettings:', {
+        array: currentSettings.ads.images,
+        length: currentSettings.ads.images.length,
+        first: currentSettings.ads.images[0],
+        second: currentSettings.ads.images[1],
+        third: currentSettings.ads.images[2]
+        });
         try {
-            // Очищаем localStorage перед сохранением
-            localStorage.removeItem('shopSettings');
-            sessionStorage.removeItem('shopAdsImages');
+            // Создаем полный объект дизайна сайта
+            const siteDesign = {
+                // Основные настройки
+                headerColor: currentSettings.header.bgColor,
+                siteName: currentSettings.name.text,
+                backgroundColor: currentSettings.page.bgColor,
+                
+                // Логотип
+                logo: currentSettings.logo.url || null,
+                logoBgColor: currentSettings.logo.bgColor,
+                
+                // Настройки текста
+                name: {
+                    text: currentSettings.name.text,
+                    font: currentSettings.name.font,
+                    size: currentSettings.name.size,
+                    color: currentSettings.name.color
+                },
+                
+                // Рекламные баннеры
+                ads: currentSettings.ads.images.filter(img => img && img.trim() !== ''),
+                
+                // Продукты (будут добавляться из админки)
+                products: [],
+                
+                // Стили карточек товаров
+                productStyles: {
+                    name: currentSettings.product.name,
+                    price: currentSettings.product.price,
+                    cardBgColor: currentSettings.product.cardBgColor,
+                    buttonColor: currentSettings.product.buttonColor,
+                    buttonTextColor: currentSettings.product.buttonTextColor || '#FFFFFF',
+                    priceColor: currentSettings.product.priceColor || '#B73131',
+                    font: currentSettings.product.font,
+                    fontSize: currentSettings.product.fontSize
+                },
+                
+                // Метаданные
+                savedAt: new Date().toISOString(),
+                lastEdited: new Date().toISOString(),
+                version: '1.0'
+            };
             
-            // Создаем облегченную версию настроек без изображений
-            const lightSettings = {
+            // СОХРАНЯЕМ ГЛАВНЫЙ ОБЪЕКТ - siteDesign
+            localStorage.setItem('siteDesign', JSON.stringify(siteDesign));
+            
+            // Также сохраняем для редактора (на будущее)
+            localStorage.setItem('shopSettings', JSON.stringify({
                 page: currentSettings.page,
                 header: currentSettings.header,
                 logo: currentSettings.logo,
                 name: currentSettings.name,
-                ads: {
-                    hasImages: currentSettings.ads.images.some(img => img)
-                },
+                ads: currentSettings.ads,
                 product: currentSettings.product
-            };
+            }));
             
-            // Сохраняем легкие настройки в localStorage
-            localStorage.setItem('shopSettings', JSON.stringify(lightSettings));
-            console.log('Основные настройки сохранены в localStorage');
+            // Устанавливаем флаг, что сайт готов к просмотру
+            localStorage.setItem('siteReady', 'true');
             
-            // Сохраняем изображения в sessionStorage (если есть)
-            const validImages = currentSettings.ads.images.filter(img => img);
-            if (validImages.length > 0) {
-                // Ограничиваем размер каждого изображения
-                const compressedImages = validImages.map(img => {
-                    if (img.length > 100000) { // Если изображение больше 100KB
-                        return compressExistingImage(img);
-                    }
-                    return Promise.resolve(img);
-                });
-                
-                Promise.all(compressedImages).then(images => {
-                    sessionStorage.setItem('shopAdsImages', JSON.stringify(images));
-                    console.log('Рекламные изображения сохранены в sessionStorage');
-                    showSaveNotification();
-                }).catch(error => {
-                    console.error('Ошибка сжатия при сохранении:', error);
-                    sessionStorage.setItem('shopAdsImages', JSON.stringify(validImages));
-                    showSaveNotification();
-                });
-            } else {
-                showSaveNotification();
-            }
+            console.log('Дизайн сайта сохранен!', siteDesign);
+            showSaveNotification('Дизайн сайта сохранен! Теперь можно посмотреть результат в разделе "Ваш магазин".');
             
         } catch (error) {
-            console.error('Ошибка при сохранении:', error);
-            
-            // Пробуем сохранить хотя бы основные настройки
-            try {
-                const backupSettings = { ...currentSettings };
-                backupSettings.ads.images = [];
-                localStorage.setItem('shopSettings', JSON.stringify(backupSettings));
-                alert('Настройки сохранены без рекламных изображений.');
-            } catch (backupError) {
-                alert('Не удалось сохранить настройки. Очистите кэш браузера и попробуйте снова.');
-            }
+            console.error('Ошибка сохранения:', error);
+            alert('Ошибка сохранения: ' + error.message);
         }
     }
-    
+ }
+    // Функция показа уведомления
+    function showSaveNotification(message) {
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4CAF50;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 10000;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease;
+        `;
+        
+        notification.innerHTML = `
+            <i class="fas fa-check-circle"></i>
+            <span>${message}</span>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+
+
     // Сжатие существующего изображения
     function compressExistingImage(dataUrl) {
         return new Promise((resolve, reject) => {
@@ -852,7 +924,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Функция показа уведомления
-    function showSaveNotification() {
+    function showSaveNotification(message = 'Настройки успешно сохранены!') {
         const notification = document.createElement('div');
         notification.style.cssText = `
             position: fixed;
@@ -869,11 +941,12 @@ document.addEventListener('DOMContentLoaded', function() {
             align-items: center;
             gap: 10px;
             animation: slideIn 0.3s ease;
+            max-width: 400px;
         `;
         
         notification.innerHTML = `
             <i class="fas fa-check-circle" style="font-size: 20px;"></i>
-            <span>Настройки успешно сохранены!</span>
+            <span>${message}</span>
         `;
         
         const style = document.createElement('style');
@@ -901,122 +974,104 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 3000);
     }
     
-    // Загрузка сохраненных настроек
-    function loadSavedSettings() {
-        const saved = localStorage.getItem('shopSettings');
-        if (saved) {
-            try {
-                const loadedSettings = JSON.parse(saved);
-                
-                // Загружаем сохраненные настройки
-                currentSettings = {
-                    page: loadedSettings.page || { bgColor: '#FFF2F2' },
-                    header: loadedSettings.header || { bgColor: '#892828' },
-                    logo: loadedSettings.logo || { url: null, bgColor: 'rgba(255, 255, 255, 0.1)' },
-                    name: loadedSettings.name || { text: 'Название магазина', font: 'Arial, sans-serif', size: 24, color: '#FFFFFF' },
-                    ads: { images: [] }, // Пустой массив, изображения загружаем отдельно
-                    product: loadedSettings.product || {
-                        name: 'Товар',
-                        price: 1500,
-                        font: 'Arial, sans-serif',
-                        fontSize: 18,
-                        cardBgColor: '#FFFFFF',
-                        buttonColor: '#B73131'
-                    }
-                };
-                
-                // Загружаем изображения из sessionStorage
-                const savedAdsImages = sessionStorage.getItem('shopAdsImages');
-                if (savedAdsImages) {
-                    try {
-                        const images = JSON.parse(savedAdsImages);
-                        if (Array.isArray(images)) {
-                            currentSettings.ads.images = images.slice(0, 3);
-                        }
-                    } catch (e) {
-                        console.warn('Не удалось загрузить рекламные изображения:', e);
-                    }
+// Загрузка сохраненных настроек
+function loadSavedSettings() {
+    console.log('Попытка загрузить сохраненные настройки...');
+    
+    // Сначала пробуем загрузить из siteDesign
+    const siteDesign = localStorage.getItem('siteDesign');
+    
+    if (siteDesign) {
+        try {
+            const loaded = JSON.parse(siteDesign);
+            console.log('Найден siteDesign:', loaded);
+            
+            // Загружаем настройки из сохраненного дизайна
+            currentSettings = {
+                page: { bgColor: loaded.backgroundColor || '#FFF2F2' },
+                header: { bgColor: loaded.headerColor || '#892828' },
+                logo: { 
+                    url: loaded.logo || null, 
+                    bgColor: loaded.logoBgColor || 'rgba(255, 255, 255, 0.1)' 
+                },
+                name: loaded.name || { 
+                    text: 'Название магазина', 
+                    font: 'Arial, sans-serif', 
+                    size: 24, 
+                    color: '#FFFFFF' 
+                },
+                ads: { images: loaded.ads || [] },
+                product: loaded.productStyles || {
+                    name: 'Товар',
+                    price: 1500,
+                    font: 'Arial, sans-serif',
+                    fontSize: 18,
+                    cardBgColor: '#FFFFFF',
+                    buttonColor: '#B73131',
+                    buttonTextColor: '#FFFFFF',
+                    priceColor: '#B73131'
                 }
-                
-                console.log('Настройки загружены:', currentSettings);
-                
-            } catch (e) {
-                console.error('Ошибка загрузки настроек:', e);
-            }
+            };
+            
+            console.log('Дизайн загружен из siteDesign');
+            return;
+        } catch (e) {
+            console.error('Ошибка загрузки siteDesign:', e);
         }
     }
     
-    // Инициализация
+    // Если нет siteDesign, загружаем старые настройки
+    const shopSettings = localStorage.getItem('shopSettings');
+    if (shopSettings) {
+        try {
+            const loadedSettings = JSON.parse(shopSettings);
+            console.log('Загружены shopSettings:', loadedSettings);
+            
+            // Обновляем текущие настройки
+            if (loadedSettings.page) currentSettings.page = loadedSettings.page;
+            if (loadedSettings.header) currentSettings.header = loadedSettings.header;
+            if (loadedSettings.logo) currentSettings.logo = loadedSettings.logo;
+            if (loadedSettings.name) currentSettings.name = loadedSettings.name;
+            if (loadedSettings.ads) currentSettings.ads = loadedSettings.ads;
+            if (loadedSettings.product) currentSettings.product = loadedSettings.product;
+            
+        } catch (e) {
+            console.error('Ошибка загрузки shopSettings:', e);
+        }
+    }
+    
+    console.log('Используются настройки по умолчанию');
+}   
     init();
 });
 
-    // ========== СОХРАНЕНИЕ САЙТА ДЛЯ РАЗДЕЛА "ВАШ САЙТ" ==========
-    
-    // Модифицируем существующую кнопку Сохранить для сохранения сайта
-    saveBtn.addEventListener('click', function(e) {
-        e.preventDefault(); // Отменяем стандартное поведение
-        
-        // Сохраняем настройки редактора (старая функция)
-        saveSettings();
-        
-        // Дополнительно сохраняем сайт для раздела "Ваш сайт"
-        saveSiteForViewing();
-    });
-    
-    // Сохраняем сайт для просмотра в разделе "Ваш сайт"
-    function saveSiteForViewing() {
-        console.log('Сохранение сайта для раздела "Ваш сайт"...');
-        
-        try {
-            // Собираем все данные о сайте
-            const siteDesign = {
-                // Основные настройки
-                headerColor: currentSettings.header.bgColor,
-                siteName: currentSettings.name.text,
-                backgroundColor: currentSettings.page.bgColor,
-                
-                // Логотип
-                logo: currentSettings.logo.url || null,
-                logoBgColor: currentSettings.logo.bgColor,
-                
-                // Товары (4 карточки как в редакторе)
-                products: [],
-                
-                // Рекламные баннеры
-                ads: currentSettings.ads.images.filter(img => img !== null && img !== ''),
-                
-                // Стили товаров
-                productStyles: {
-                    name: currentSettings.product.name,
-                    price: currentSettings.product.price,
-                    cardBgColor: currentSettings.product.cardBgColor,
-                    buttonColor: currentSettings.product.buttonColor
-                },
-                
-                // Мета-информация
-                savedAt: new Date().toISOString()
-            };
-            
-            // Добавляем 4 товара как в редакторе
-            for (let i = 1; i <= 4; i++) {
-                siteDesign.products.push({
-                    id: i,
-                    name: currentSettings.product.name,
-                    price: currentSettings.product.price,
-                    description: 'Описание товара',
-                    image: '' // Без фото - будет розовый фон как в редакторе
-                });
-            }
-            
-            // Сохраняем дизайн сайта
-            localStorage.setItem('siteDesign', JSON.stringify(siteDesign));
-            
-            // Устанавливаем флаг, что сайт опубликован
-            localStorage.setItem('sitePublished', 'true');
-            
-            console.log('Сайт сохранен для просмотра:', siteDesign);
-            
-        } catch (error) {
-            console.error('Ошибка при сохранении сайта:', error);
-        }
+// Вспомогательные функции для работы с цветами
+function extractAlphaFromColor(color) {
+    if (color.startsWith('rgba')) {
+        const match = color.match(/rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)/);
+        return match ? parseFloat(match[4]) : 1;
     }
+    return 1; 
+}
+
+function rgbToHex(rgbaColor) {
+    if (rgbaColor.startsWith('#')) return rgbaColor;
+    
+    const match = rgbaColor.match(/(\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]).toString(16).padStart(2, '0');
+        const g = parseInt(match[2]).toString(16).padStart(2, '0');
+        const b = parseInt(match[3]).toString(16).padStart(2, '0');
+        return `#${r}${g}${b}`;
+    }
+    return '#FFFFFF';
+}
+
+function hexToRgb(hex) {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : {r: 255, g: 255, b: 255};
+}

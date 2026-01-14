@@ -1,4 +1,3 @@
-// [file name]: cart-data.js
 window.cartManager = {
     // Получить все товары
     getCart: function () {

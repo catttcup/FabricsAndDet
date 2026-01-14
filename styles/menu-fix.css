@@ -83,3 +83,25 @@
     text-decoration: none !important;
     color: inherit !important;
 }
+/* Стили для счетчика корзины (для главной страницы) */
+.cart-counter {
+    position: absolute !important;
+    top: 5px !important;
+    right: 5px !important;
+    background-color: #FF6B6B !important;
+    color: white !important;
+    border-radius: 50% !important;
+    width: 20px !important;
+    height: 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    z-index: 2 !important;
+}
+
+/* Делаем кнопку корзины относительной для позиционирования */
+.menu__btn-cart {
+    position: relative !important;
+}

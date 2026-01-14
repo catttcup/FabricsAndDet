@@ -750,3 +750,62 @@ body {
         -webkit-mask-image: none;
     }
 }
+/* Дополняем существующие стили */
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* Стиль для слайдера прозрачности */
+.form-range {
+    width: 100%;
+    height: 6px;
+    -webkit-appearance: none;
+    background: linear-gradient(to right, #ddd, #666);
+    border-radius: 3px;
+    margin: 10px 0;
+}
+
+.form-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #B73131;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Для цветовых полей */
+.form-color {
+    width: 100%;
+    height: 40px;
+    padding: 0;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    background: white;
+}
+
+/* Цветные опции для логотипа */
+.color-option[data-color="rgba(255, 255, 255, 0.1)"] {
+    background: repeating-linear-gradient(
+        45deg,
+        #ddd,
+        #ddd 5px,
+        #f5f5f5 5px,
+        #f5f5f5 10px
+    );
+    position: relative;
+}
+
+.color-option[data-color="rgba(255, 255, 255, 0.1)"]::after {
+    content: "Прозрачный";
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    color: #666;
+    white-space: nowrap;
+}
