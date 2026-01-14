@@ -117,6 +117,12 @@ function setupLogoutButton() {
             // Используем userSimple для выхода
             if (window.userSimple && userSimple.logout) {
                 userSimple.logout();
+                localStorage.removeItem('siteDesign');
+                localStorage.removeItem('shopSettings');
+                localStorage.removeItem('siteReady');
+                localStorage.removeItem('sitePublished');
+                localStorage.removeItem('products');
+                localStorage.removeItem('shopAdsImages');
             } else {
                 // Если userSimple не доступен, очищаем вручную
                 localStorage.removeItem('username');
@@ -136,7 +142,6 @@ function setupLogoutButton() {
     logoutBtn.title = 'Выйти из аккаунта';
     console.log('Кнопка выхода настроена');
 }
-
 // Функции для работы с вкладками
 function showContent(tabName) {
     let title = '';

@@ -781,6 +781,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Функция для сохранения дизайна сайта
     function saveSiteDesign() {
         console.log('Сохранение дизайна сайта...');
+
+        const shopName = currentSettings.name.text.trim();
+        // Проверка названия магазина
+        if (!shopName || shopName === 'Название магазина' || shopName === '') {
+            showErrorNotification('Название магазина обязательно!');
+            return; // Прерываем сохранение
+        }
         console.log('Текущие баннеры в currentSettings:', {
         array: currentSettings.ads.images,
         length: currentSettings.ads.images.length,
@@ -888,6 +895,38 @@ document.addEventListener('DOMContentLoaded', function() {
             notification.style.animation = 'slideOut 0.3s ease';
             setTimeout(() => notification.remove(), 300);
         }, 3000);
+    }
+    // Функция показа ошибки
+    function showErrorNotification(message) {
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #ff4757;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 10000;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease;
+        `;
+        
+        notification.innerHTML = `
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>${message}</span>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 4000);
     }
 
 
