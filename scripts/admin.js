@@ -442,10 +442,17 @@ function updateSiteWithProducts() {
     console.log('Загружено товаров:', products.length);
     
     // Карточки заказов
+    // Карточки заказов
     document.querySelectorAll('.order-card').forEach(card => {
         card.addEventListener('click', function() {
             const orderType = this.querySelector('.order-title').textContent;
-            alert(`Просмотр: ${orderType}`);
+            alert('Раздел находится в разработке');
+            // Проверяем, какая карточка
+            // if (orderType === 'Новые заказы' || orderType === 'В обработке' || orderType === 'Согласован, нуждается в отправке'  ) {
+            //     alert('Раздел находится в разработке');
+            // } else {
+            //     alert(`Просмотр: ${orderType}`);
+            // }
         });
     });
     
