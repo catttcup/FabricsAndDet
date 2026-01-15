@@ -1,27 +1,51 @@
 document.addEventListener('DOMContentLoaded', function () {
+    console.log('✅ products.js загружен');
+    console.log('📦 Товары:', window.productsData);
+    console.log('🏪 Магазины:', window.defaultShops);
+    
     const productsGrid = document.querySelector('.products-grid');
+    if (!productsGrid) {
+        console.error('❌ Не найден .products-grid');
+        return;
+    }
 
-    if (!productsGrid || !window.productsData) return;
+    if (!window.productsData) {
+        console.error('❌ Нет данных о товарах');
+        return;
+    }
 
-    // Очищаем старые карточки (если есть)
+    // Очищаем старые карточки
     productsGrid.innerHTML = '';
 
-    // Генерируем карточки товаров
+    // Создаем карточки
     window.productsData.forEach(product => {
+        console.log('Создаем карточку для товара:', product.id, 'shop:', product.shop);
         const productCard = createProductCard(product);
         productsGrid.appendChild(productCard);
     });
 
-    // Добавляем обработчики событий
+    // Добавляем обработчики
     addProductCardEventListeners();
+    
+    // Инициализируем поиск
+    setTimeout(initSearch, 100);
 });
 
 function createProductCard(product) {
+    console.log('🛠️ Создание карточки товара:', product.id);
+    
+    // Определяем имя магазина
+    let shopName = 'Магазин';
+    if (window.defaultShops && product.shop) {
+        const shop = window.defaultShops[product.shop];
+        if (shop) shopName = shop.name;
+    }
+
     const article = document.createElement('article');
     article.className = 'product-card';
     article.dataset.id = product.id;
 
-    // Простой HTML без сложной логики ошибок
+    // ВАЖНО: Вставляем ссылку на магазин прямо в HTML
     article.innerHTML = `
         <div class="product-card__image">
             <img src="${product.image}" 
@@ -39,19 +63,26 @@ function createProductCard(product) {
                     <span class="product-card__category"></span>
                     <span class="product-card__stock"></span>
                 </div>
+                <!-- ССЫЛКА НА МАГАЗИН ДОБАВЛЕНА ЗДЕСЬ -->
+                <a href="#" class="product-shop-link" data-shop="${product.shop || ''}">
+                    <i class="fas fa-store"></i> ${shopName}
+                </a>
             </div>
         </div>
         <button class="product-card__cart-btn" data-product-id="${product.id}">В корзину</button>
     `;
 
+    console.log('✅ Карточка создана со ссылкой на магазин');
     return article;
 }
 
 function addProductCardEventListeners() {
-    // Обработчик кнопок "Добавить в корзину"
+    console.log('🔄 Добавление обработчиков...');
+    
+    // 1. Обработчик кнопок "Добавить в корзину"
     document.querySelectorAll('.product-card__cart-btn').forEach(btn => {
         btn.addEventListener('click', function (e) {
-            e.stopPropagation(); // Останавливаем всплытие
+            e.stopPropagation();
             const productId = parseInt(this.dataset.productId);
             const product = window.productsData.find(p => p.id === productId);
 
@@ -61,17 +92,37 @@ function addProductCardEventListeners() {
         });
     });
 
-    // Обработчик клика по карточке (для перехода на страницу товара)
-    document.querySelectorAll('.product-card').forEach(card => {
-        card.addEventListener('click', function (e) {
-            // Если кликнули не по кнопке "Добавить в корзину"
-            if (!e.target.closest('.product-card__cart-btn')) {
-                const productId = parseInt(this.dataset.id);
-                console.log('Клик по карточке товара:', productId, product.title);
-                // window.location.href = `/product.html?id=${productId}`;
+    // 2. Обработчик ссылок на магазин
+    document.querySelectorAll('.product-shop-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const shopId = this.dataset.shop;
+            console.log('🎯 Клик по магазину:', shopId);
+            
+            if (shopId) {
+                localStorage.setItem('selectedShop', shopId);
+                localStorage.setItem('isDefaultShop', 'true');
+                window.open('shop-page.html', '_blank');
+            } else {
+                console.warn('⚠️ У ссылки нет data-shop атрибута');
             }
         });
     });
+
+    // 3. Обработчик клика по карточке
+    document.querySelectorAll('.product-card').forEach(card => {
+        card.addEventListener('click', function (e) {
+            if (!e.target.closest('.product-card__cart-btn') && 
+                !e.target.closest('.product-shop-link')) {
+                const productId = parseInt(this.dataset.id);
+                console.log('Клик по карточке товара:', productId);
+            }
+        });
+    });
+    
+    console.log('✅ Обработчики добавлены');
 }
 async function addToCart(product) {
     // Если пользователь авторизован - добавляем через API

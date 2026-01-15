@@ -249,3 +249,46 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 100);
     }
 });
+
+
+// Проверяем, создан ли магазин (сайт опубликован)
+function isShopCreated() {
+    return localStorage.getItem('sitePublished') === 'true' || 
+           localStorage.getItem('siteDesign') !== null;
+}
+
+// Обновляем кнопку в зависимости от состояния
+function updateShopButton() {
+    const createShopBtn = document.getElementById('createShopBtn');
+    if (!createShopBtn) return;
+    
+    const shopBtnText = createShopBtn.querySelector('.menu__btn-text');
+    const shopBtnImg = createShopBtn.querySelector('.menu__btn-img');
+    
+    if (isShopCreated()) {
+        // Магазин уже создан - меняем на "Мой магазин"
+        shopBtnText.textContent = 'Мой магазин';
+        shopBtnImg.alt = 'Мой магазин';
+        // Можно поменять и иконку, если есть другая
+        // shopBtnImg.src = 'images/icon-my-shop.svg';
+        
+        // Меняем поведение кнопки - ведем в админку
+        createShopBtn.onclick = function() {
+            window.location.href = 'admin.html';
+        };
+    } else {
+        // Магазин не создан - оставляем "Создать магазин"
+        shopBtnText.textContent = 'Создать магазин';
+        shopBtnImg.alt = 'Создать магазин';
+        
+        // Ведущий в админку (или editor.html, если хочешь сразу в редактор)
+        createShopBtn.onclick = function() {
+            window.location.href = 'admin.html';
+        };
+    }
+}
+
+// Вызываем при загрузке страницы
+document.addEventListener('DOMContentLoaded', function() {
+    updateShopButton();
+});

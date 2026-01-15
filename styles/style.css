@@ -229,6 +229,7 @@ body {
     border-radius: 13px;
     align-self: center;
     margin-block-start: -7px;
+    cursor: pointer;
 }
 
 .button__login {
@@ -378,6 +379,48 @@ body {
     margin-inline-start: 25px;
 }
 
+/* Стили для ссылки на магазин в карточке товара */
+.product-shop-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #B73131;
+    font-size: 13px;
+    text-decoration: none;
+    padding: 5px 10px;
+     background: rgba(183, 49, 49, 0.1); 
+    border-radius: 16px;
+    margin: 8px 0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.product-shop-link:hover {
+    background: #e0e0e0;
+    color: #B73131;
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+.product-shop-link i {
+    font-size: 11px;
+    opacity: 0.7;
+}
+
+/* Убедись что карточка имеет правильную структуру */
+.product-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card__info {
+    flex-grow: 1;
+}
+
+.product-card__cart-btn {
+    margin-top: auto;
+}
 /*НЕТ В МАКЕТЕ!!*/
 .button__login_in_fieldset:hover {
     background: transparent;
