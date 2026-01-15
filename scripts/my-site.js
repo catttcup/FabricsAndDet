@@ -9,23 +9,28 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function createSiteFromScratch() {
-    // ОЧИСТКА
-    document.body.innerHTML = '';
+    // Проверяем параметр в URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const isTemplate = urlParams.has('template');
     
-    // Сразу ставим фон
-    document.body.style.backgroundColor = '#FFF2F2';
-    document.body.style.minHeight = '100vh';
-    document.body.style.margin = '0';
-    document.body.style.fontFamily = 'Arial, sans-serif';
+    if (isTemplate) {
+        // Загружаем шаблон из sessionStorage
+        const templateDesign = sessionStorage.getItem('tempSiteDesign');
+        if (templateDesign) {
+            try {
+                const design = JSON.parse(templateDesign);
+                console.log('📋 Загружен шаблонный дизайн');
+                createCompleteSite(design);
+                return;
+            } catch (error) {
+                console.error('Ошибка загрузки шаблона:', error);
+            }
+        }
+    }
     
+    // Иначе обычная логика
     const siteDesignJSON = localStorage.getItem('siteDesign');
     const isSiteReady = localStorage.getItem('siteReady') === 'true';
-    
-    console.log('🔍 Проверка:', {
-        hasDesign: !!siteDesignJSON,
-        isReady: isSiteReady,
-        designLength: siteDesignJSON ? siteDesignJSON.length : 0
-    });
     
     if (!siteDesignJSON || !isSiteReady) {
         showNoDesignMessage();
@@ -38,15 +43,7 @@ function createSiteFromScratch() {
         createCompleteSite(design);
     } catch (error) {
         console.error('❌ Ошибка парсинга:', error);
-        document.body.innerHTML = `
-            <div style="padding: 50px; text-align: center;">
-                <h1 style="color: red;">Ошибка загрузки дизайна</h1>
-                <p>${error.message}</p>
-                <button onclick="window.location.href='editor.html'" style="background: #B73131; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-size: 16px; cursor: pointer; margin-top: 20px;">
-                    В редактор
-                </button>
-            </div>
-        `;
+        showNoDesignMessage();
     }
 }
 
@@ -100,7 +97,7 @@ function createCompleteSite(design) {
         margin: 0 auto;
     `;
 
-    let adsHTML = '<h2 style="color: #333; margin-bottom: 20px;">Рекламные баннеры</h2>';
+    let adsHTML = '<h2 style="color: #333; margin-bottom: 20px;"></h2>';
 
     console.log('Дизайн для баннеров:', design);
     console.log('Баннеры в дизайне:', design.ads);
@@ -157,21 +154,53 @@ function createCompleteSite(design) {
     `;
     
     const products = JSON.parse(localStorage.getItem('products') || '[]');
-    
+
     let productsHTML = '<h2 style="color: #333; margin-bottom: 20px;">Товары</h2>';
-    
+
     if (products.length > 0) {
         productsHTML += '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px;">';
         
         products.forEach((product, index) => {
             productsHTML += `
-                <div style="background: ${design.productStyles?.cardBgColor || '#FFFFFF'}; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
-                    <div style="width: 100%; height: 200px; background: #FDB0B0; border-radius: 8px; margin-bottom: 15px;"></div>
-                    <h3 style="color: #333; margin: 0 0 10px 0;">${product.name || 'Товар без названия'}</h3>
-                    <p style="color: #666; margin: 0 0 15px 0; font-size: 14px;">${product.description || 'Описание отсутствует'}</p>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <div style="font-size: 22px; font-weight: bold; color: ${design.productStyles?.priceColor || '#B73131'};">${product.price || 0} руб</div>
-                        <button style="background: ${design.productStyles?.buttonColor || '#B73131'}; color: ${design.productStyles?.buttonTextColor || '#FFFFFF'}; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold;">
+                <div style="background: ${design.productStyles?.cardBgColor || '#FFFFFF'}; 
+                            border-radius: 12px; 
+                            padding: 20px; 
+                            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+                            display: flex;
+                            flex-direction: column;">
+                    <div style="width: 100%; 
+                                height: 200px; 
+                                background: #FDB0B0; 
+                                border-radius: 8px; 
+                                margin-bottom: 15px;"></div>
+                    <h3 style="color: #333; 
+                                margin: 0 0 10px 0;
+                                font-family: ${design.productStyles?.font || 'Arial, sans-serif'};
+                                font-size: ${design.productStyles?.fontSize || 18}px;">
+                        ${product.name || 'Товар без названия'}
+                    </h3>
+                    <p style="color: #666; 
+                            margin: 0 0 15px 0; 
+                            font-size: 14px;
+                            flex-grow: 1;">
+                        ${product.description || 'Описание отсутствует'}
+                    </p>
+                    <div style="margin-top: auto;">
+                        <div style="font-size: 22px; 
+                                    font-weight: bold; 
+                                    color: ${design.productStyles?.priceColor || '#B73131'};
+                                    margin-bottom: 15px;">
+                            ${product.price || 0} руб
+                        </div>
+                        <button style="width: 100%;
+                                    background: ${design.productStyles?.buttonColor || '#B73131'}; 
+                                    color: ${design.productStyles?.buttonTextColor || '#FFFFFF'}; 
+                                    border: none; 
+                                    padding: 12px; 
+                                    border-radius: 6px; 
+                                    cursor: pointer; 
+                                    font-weight: bold;
+                                    font-size: 16px;">
                             В корзину
                         </button>
                     </div>

@@ -38,16 +38,16 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Функция открытия сайта 
     function openSite() {
-        const hasSiteDesign = checkSiteDesign();
-        const isPublished = localStorage.getItem('sitePublished') === 'true';
+        const siteDesignJSON = localStorage.getItem('siteDesign');
+        const siteReady = localStorage.getItem('siteReady') === 'true';
         
-        // ВАЖНО: Если сайт не опубликован, но есть дизайн - все равно показываем
-        if (hasSiteDesign) {
-            // Есть сохраненный дизайн - открываем его
-            console.log('Открываем сохраненный дизайн');
+        // Если есть сохраненный дизайн И пользователь нажал "Сохранить" в редакторе
+        if (siteDesignJSON && siteReady) {
+            // Открываем сохраненный пользователем дизайн
+            console.log('Открываем сохраненный пользователем дизайн');
             window.open('my-site.html', '_blank');
         } else {
-            // Нет дизайна - открываем шаблон по умолчанию
+            // Иначе открываем шаблон по умолчанию (как в редакторе)
             console.log('Открываем шаблон по умолчанию');
             createAndOpenTemplate();
         }
@@ -55,7 +55,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 4. Создание и открытие шаблона по умолчанию
     function createAndOpenTemplate() {
-        const allProducts = JSON.parse(localStorage.getItem('products') || '[]');
         
         let defaultTemplate = {
             headerColor: '#892828',
@@ -73,8 +72,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 buttonTextColor: '#FFFFFF',
                 priceColor: '#B73131'
             },
+            isTemplate: true,
             savedAt: new Date().toISOString()
         };
+        openSiteWithDesign(defaultTemplate);
         
         // Добавляем реальные товары если есть
         if (allProducts.length > 0) {
@@ -96,29 +97,75 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Публикация сайта
     function publishSite() {
-        if (confirm('Вы уверены, что хотите опубликовать сайт?')) {
-            const hasSiteDesign = checkSiteDesign();
-            
-            if (!hasSiteDesign) {
-                // Если нет дизайна - создаем шаблон
-                createAndOpenTemplate();
-            }
-            
-            // Помечаем как опубликованный
-            isSitePublished = true;
-            localStorage.setItem('sitePublished', 'true');
-            
-            // Если есть сохраненный дизайн, обновляем его статус
-            const siteDesign = localStorage.getItem('siteDesign');
-            if (siteDesign) {
-                const design = JSON.parse(siteDesign);
-                design.isPublished = true;
-                localStorage.setItem('siteDesign', JSON.stringify(design));
-            }
-            
-            alert('Поздравляем с созданием магазина! Теперь вы можете добавлять товары.');
-            updateUIForPublishing();
+    const hasSiteDesign = checkSiteDesign();
+    
+    if (confirm('Вы уверены, что хотите опубликовать сайт?')) {
+        // ВСЕГДА создаем пустой магазин при публикации
+        createAndPublishEmptySite();
+        
+        alert('Магазин опубликован! Теперь вы можете добавлять товары через кнопку "Добавить товар".');
+        updateUIForPublishing();
+    }
+}
+    function openSiteWithDesign(design) {
+    // Сохраняем дизайн во временное хранилище
+    sessionStorage.setItem('tempSiteDesign', JSON.stringify(design));
+    
+    // Открываем сайт с параметром
+    window.open('my-site.html?template=true', '_blank');
+}
+
+    // Создание и публикация ПУСТОГО магазина:
+    function createAndPublishEmptySite() {
+        // Шаблон сайта - ВСЕГДА ПУСТОЙ при публикации
+        let emptySite = {
+            headerColor: '#892828',
+            siteName: 'Мой магазин F&D',
+            backgroundColor: '#FFF2F2',
+            logo: null,
+            logoBgColor: 'rgba(255, 255, 255, 0.1)',
+            ads: [],
+            products: [], // ВСЕГДА ПУСТОЙ МАССИВ!
+            productStyles: {
+                name: 'Товар',
+                price: 0,
+                cardBgColor: '#FFFFFF',
+                buttonColor: '#B73131',
+                buttonTextColor: '#FFFFFF',
+                priceColor: '#B73131'
+            },
+            isTemplate: true,
+            isPublished: true,
+            savedAt: new Date().toISOString()
+        };
+        
+        // ЕСЛИ есть сохраненный дизайн из редактора - используем его стили
+        const savedDesign = JSON.parse(localStorage.getItem('siteDesign') || 'null');
+        if (savedDesign && !savedDesign.isTemplate) {
+            // Копируем стили, но ОСТАВЛЯЕМ products ПУСТЫМ
+            emptySite.headerColor = savedDesign.headerColor || '#892828';
+            emptySite.siteName = savedDesign.siteName || 'Мой магазин F&D';
+            emptySite.backgroundColor = savedDesign.backgroundColor || '#FFF2F2';
+            emptySite.logo = savedDesign.logo || null;
+            emptySite.logoBgColor = savedDesign.logoBgColor || 'rgba(255, 255, 255, 0.1)';
+            emptySite.ads = savedDesign.ads || [];
+            emptySite.productStyles = savedDesign.productStyles || {
+                name: 'Товар',
+                price: 0,
+                cardBgColor: '#FFFFFF',
+                buttonColor: '#B73131',
+                buttonTextColor: '#FFFFFF',
+                priceColor: '#B73131'
+            };
+            emptySite.isTemplate = false; // Это уже кастомный дизайн
         }
+        
+        // Сохраняем ПУСТОЙ сайт
+        localStorage.setItem('siteDesign', JSON.stringify(emptySite));
+        
+        // Помечаем как опубликованный
+        localStorage.setItem('sitePublished', 'true');
+        isSitePublished = true;
     }
     
     // Удаление сайта
@@ -269,8 +316,9 @@ function updateSiteWithProducts() {
         const siteDesign = localStorage.getItem('siteDesign');
         const isSiteReady = localStorage.getItem('siteReady') === 'true';
         
+        openSite();
         if (siteDesign && isSiteReady) {
-            window.open('my-site.html', '_blank');
+            
         } else {
             if (confirm('Сайт еще не настроен. Хотите перейти в редактор?')) {
                 window.location.href = 'editor.html';
